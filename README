@@ -1,0 +1,11 @@
+Place game.config in the same directory as the the program is executed from.
+
+Flappy Bird sprites (C) Dong Nguyen and .GEARS STUDIOS 2013.
+
+Extensions
+----------
+1. Animations: In the config file, the "Sprites" key under the [Stickman] section contains the paths to each frame of the character sprite separated by spaces. The "SpriteDuration" is the duration of each frame in milliseconds.
+
+2. Pause Screen: Press ESC to pause/unpause the game. In the config file, set the "PauseScreen" key under the [Game] section to "off" to turn off this extension.
+
+3. Day/Night Cycle: The background will darken and brighten as time progresses. In the config file, the "DayDuration" key under the [Background] section is the number of milliseconds that it takes to go from day to night back to day. Set to 0 to disable the effect (day time forever).
