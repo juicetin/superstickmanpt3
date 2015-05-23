@@ -6,6 +6,8 @@
 #include "level.h"
 #include "stickman.h"
 #include "stickmanadapter.h"
+#include "score.h"
+#include "lives.h"
 
 #include <QDialog>
 #include <QKeyEvent>
@@ -42,9 +44,13 @@ private:
     Background *m_background;
     bool m_paused;
     bool m_pauseScreenEnabled;
+    bool m_stageThreeEnabled;
     QImage m_pauseImage;
 
     Level* m_level;
+
+    Score m_score;
+    Lives *m_lives;
 
     QTime m_time;
 };

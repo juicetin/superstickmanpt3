@@ -10,6 +10,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QTimer>
+#include <QStaticText>
 
 #include <iostream>
 #include <sstream>
@@ -35,6 +36,12 @@ bool Dialog::loadConfiguration(const ConfigReader &reader)
         successful = false;
     }
     m_pauseScreenEnabled = (pauseScreenStatus == "on");
+
+    std::string stageThreeStatus = reader.get("Game", "Stage3");
+    if (stageThreeStatus != "on") {
+        stageThreeStatus = "off";
+    }
+    m_stageThreeEnabled = (stageThreeStatus == "on");
 
     // Parse background image
     QPixmap bgImage;
@@ -65,7 +72,7 @@ bool Dialog::loadConfiguration(const ConfigReader &reader)
     }
     m_background->setDayDuration(dayDuration);
 
-    // load level
+    // Load Level
     int rangeStart = QString(reader.get("Level", "RangeStart").c_str()).toInt(&parseOk);
     if (!parseOk || rangeStart < 0) {
         rangeStart = 0;
@@ -138,7 +145,7 @@ bool Dialog::loadConfiguration(const ConfigReader &reader)
             QSize(obstacleWidth * unitsInPixels, obstacleHeight * unitsInPixels),
             QPoint(obstaclePosition, (obstacleHeight * unitsInPixels / 2.0f) + height * unitsInPixels),
             QPixmap(obstacleSprite.c_str())
-        );
+            );
 
         obstaclePosition += gap * unitsInPixels;
 
@@ -199,8 +206,16 @@ bool Dialog::loadConfiguration(const ConfigReader &reader)
     }
     m_stickman->setSpriteDuration(stickmanSpriteDuration);
 
+    int lives = QString(reader.get("Stickman", "Lives").c_str()).toInt(&parseOk);
+    if (!parseOk || lives < 1) {
+        lives = 1;
+        successful = false;
+    }
+    m_lives = new Lives(lives);
+
     m_stickmanAdapter = new StickmanAdapter(m_stickman);
-    // m_stickmanAdapter->addObserver(&Camera::getInstance());
+    m_stickmanAdapter->addObserver(&m_score);
+    m_stickmanAdapter->addObserver(m_lives);
 
     int stickmanMaxJumps = QString(reader.get("Stickman", "MaxJumps").c_str()).toInt(&parseOk);
     if (!parseOk || stickmanMaxJumps <= 0) {
@@ -221,16 +236,18 @@ bool Dialog::loadConfiguration(const ConfigReader &reader)
         successful = false;
     }
 
+    // Scorekeeper
+
     return successful;
 }
 
 Dialog::Dialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::Dialog),
-    m_stickmanAdapter(NULL),
-    m_background(NULL),
-    m_paused(false),
-    m_pauseImage(":/resources/paused.png")
+QDialog(parent),
+ui(new Ui::Dialog),
+m_stickmanAdapter(NULL),
+m_background(NULL),
+m_paused(false),
+m_pauseImage(":/resources/paused.png")
 {
     ui->setupUi(this);
 
@@ -245,7 +262,7 @@ Dialog::Dialog(QWidget *parent) :
             errorMessage = std::string("Invalid values in configuration file. Using some default settings.");
         else
             errorMessage = std::string("Could not open configuration file '") + configFilePath + "'. Using default settings. \n"
-                              + "Base directory was '" + QDir::currentPath().toStdString() + "'";
+        + "Base directory was '" + QDir::currentPath().toStdString() + "'";
         QMessageBox::warning(this, "Error", errorMessage.c_str());
     }
 
@@ -266,6 +283,7 @@ Dialog::~Dialog()
     delete m_background;
     delete m_stickmanAdapter;
     delete ui;
+    delete m_lives;
 }
 
 void Dialog::nextFrame()
@@ -301,6 +319,13 @@ void Dialog::paintEvent(QPaintEvent *)
     m_background->render(painter);
     m_stickmanAdapter->render(painter);
     m_level->render(painter);
+
+    if (m_stageThreeEnabled)
+    {
+        m_score.render(painter);
+        m_lives->render(painter);
+        m_lives->update();
+    }
 
     if (m_paused) {
         // Render a pause message, with darkened background.

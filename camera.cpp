@@ -35,8 +35,3 @@ float Camera::getXPosition() const {
 float Camera::getYPosition() const {
     return m_position.y();
 }
-
-void Camera::onNotify() {
-    cout << "got here" << endl;
-    setXPosition(-1000);
-}

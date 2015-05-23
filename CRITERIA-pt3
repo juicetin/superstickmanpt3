@@ -1,4 +1,4 @@
-* Adding user control for rate at which the character moves
+	* Adding user control for rate at which the character moves
 * Ability to lose - crashing into obstacles will result in loss of life
 * Ability to win - obstacles should no longer repeat 
 	- there should be checkpoins to take you to new levels, and finally win
@@ -7,27 +7,25 @@
   	should provide a possible advantage
 
 PASSING GRADE (50%)
-	* must compile and run in lab (but may use own laptop)
-	* preserve previous two stages' functionality
-	* appropriate use of a behavioural design pattern
-		===STATE PATTERN FOR CHARACTER STATES - MOVING, WALKING JUMPING
-		===STATE PATTERN FOR CHARACTER SIZES/RESULTING BENEFITS
-	* clear code, meaningful variable/method names, informative commenting and
+DONE* must compile and run in lab (but may use own laptop)
+DONE* preserve previous two stages' functionality
+		---Stage3=on in config - otherwise no stage 3 stuff will appear
+DONE* appropriate use of a behavioural design pattern
+		---used so far - observer
+		---still can be used - state
+DONE* clear code, meaningful variable/method names, informative commenting and
 		documentation
-	* stickman must have configurable number of lives
-		===ADD VARIABLE TO CONFIG===
-		===
-	* when stickman intersects with an obstacle they lose a life and restart the
+DONE* stickman must have configurable number of lives
+		---Lives=X in config
+DONE* when stickman intersects with an obstacle they lose a life and restart the
 		level
-		===YPOS AND DIMENSIONS OF OBSTACLES FIXED. STORE XPOS SINCE LAST
-		COLLISION, AND 'RESTORE' THAT VALUE ON COLLISION 
-		===SIMILARLY FOR XPOS OF BACKGROUND
-		===PERFORM OPERATION IN SPRITE CLASS - AS ALL DRAWABLES INHERIT SPRITE
-	* score must be displayed, showing how well the player is doing (this could
+		---Simply change stickmanadapter's coordinates, because:
+		---Darren+Scott's awesome code means stickman actually has x-coordinates
+		---StickmanAdapter is subject, and lives/score are observers - life lost,
+			stickman moved back by screen [set amount]
+DONE* score must be displayed, showing how well the player is doing (this could
 		be as simple a a timer or as complex as you like)
-		===EXTRA CLASS FOR SCORE AND SCORE DISPLAY?===
-			---score component potentials - time elapsed, factor in life loss,
-			obstacles passed, obstacles avoided, obstacles destroyed, etc.
+		---Score class printed on screen - simply a timer
 
 CREDIT (65%)
 	* user control over the stickman - left and right keys will control

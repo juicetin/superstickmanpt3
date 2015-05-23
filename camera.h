@@ -5,9 +5,7 @@
 #include <QPoint>
 #include <QPointF>
 
-#include "observer.h"
-
-class Camera : public Observer
+class Camera
 {
 public:
     static Camera& getInstance() {
@@ -25,8 +23,6 @@ public:
 
     float getXPosition() const;
     float getYPosition() const;
-
-    void onNotify();
 
 private:
     Camera() {};

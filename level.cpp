@@ -75,15 +75,6 @@ QRect Level::rect() const {
     return QRect(minX, minY, maxX - minX, maxY - minY);
 }
 
-void Level::onNotify()
-{
-    for (std::vector<Sprite*>::iterator it = m_objects.begin(); it != m_objects.end(); ++it)
-    {
-        (*it)->setXPosition((*it)->getXPosition());
-		(*it)->setYPosition((*it)->getOriginalYPos());
-	}
-}
-
 //###################################################################
 // Everything below is the Level::Builder
 //###################################################################

@@ -27,7 +27,9 @@ SOURCES += main.cpp\
     level.cpp \
     stickmanadapter.cpp \
     stickman.cpp \
-    subject.cpp
+    subject.cpp \
+    score.cpp \
+    lives.cpp
 
 HEADERS  += dialog.h \
     configreader.h \
@@ -44,7 +46,9 @@ HEADERS  += dialog.h \
     stickmanadapter.h \
     stickman.h \
     observer.h \
-    subject.h
+    subject.h \
+    score.h \
+    lives.h
 
 FORMS    += dialog.ui
 
