@@ -27,8 +27,6 @@ public:
     virtual void update(int ms);
 
 private:
-    float m_originalYPos;
-
     float m_runningTime;
 };
 

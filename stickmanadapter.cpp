@@ -15,7 +15,6 @@ StickmanAdapter::StickmanAdapter(Stickman* stickman) :
     Sprite(stickman->getSprite())
 {
     Sprite::setXPosition(0.0f);
-
     // set the exact dimensions of the sprite according to stickman
     Sprite::setHeight(m_stickman->getHeight(), IgnoreAspectRatio);
     Sprite::setWidth(m_stickman->getWidth(), IgnoreAspectRatio);
@@ -75,6 +74,8 @@ void StickmanAdapter::resolveCollisions(Level *level) {
         // get the overlapping rectangle
         QRect ins = getBoundingRect().intersected(sprite->getBoundingRect());
 
+        bool wanted_collision = false;
+
         // did we hit something below?
         if (angle > 0.25 * M_PI && angle <= 0.75 * M_PI) {
             setYPosition(getYPosition() + ins.height());
@@ -84,6 +85,7 @@ void StickmanAdapter::resolveCollisions(Level *level) {
         // did we hit a wall on the right?
         } else if (angle > 0.75 * M_PI && angle <= 1.25 * M_PI) {
             setXPosition(getXPosition() - ins.width());
+            wanted_collision = true;
 
         // did we hit something above?
         } else if (angle > 1.25 * M_PI && angle <= 1.75 * M_PI) {
@@ -93,6 +95,14 @@ void StickmanAdapter::resolveCollisions(Level *level) {
         // did we hit a wall on the left?
         } else if ( (angle > 1.75 * M_PI && angle <= 2 * M_PI) || (angle >= 0 && angle <= 0.25 * M_PI)) {
             setXPosition(getXPosition() + ins.width());
+            wanted_collision = true;
+        }
+
+        // Resets from collision only occur when hitting the right/left sides
+        if (wanted_collision)
+        {
+            notify();
+            setXPosition(0);
         }
     }
 }

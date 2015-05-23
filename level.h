@@ -2,6 +2,7 @@
 #define LEVEL_H
 
 #include "sprite.h"
+#include "observer.h"
 
 #include <QPainter>
 #include <QRect>
@@ -24,7 +25,7 @@
 //   if (collidedWith != nullptr) {
 //       // resolve collision
 //   }
-class Level
+class Level : public Observer
 {
 public:
     class Builder;
@@ -43,6 +44,8 @@ public:
 
     // returns the smallest rectangle that surrounds all level objects
     QRect rect() const;
+
+    void onNotify();
 
 private:
     // all objects in the level

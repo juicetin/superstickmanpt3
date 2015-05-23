@@ -4,6 +4,9 @@
 
 #include <limits>
 
+#include <iostream>
+using namespace std;
+
 Level::Level()
 {
 
@@ -72,12 +75,21 @@ QRect Level::rect() const {
     return QRect(minX, minY, maxX - minX, maxY - minY);
 }
 
+void Level::onNotify()
+{
+    for (std::vector<Sprite*>::iterator it = m_objects.begin(); it != m_objects.end(); ++it)
+    {
+        (*it)->setXPosition((*it)->getXPosition());
+		(*it)->setYPosition((*it)->getOriginalYPos());
+	}
+}
+
 //###################################################################
 // Everything below is the Level::Builder
 //###################################################################
 
 Level::Builder::Builder() :
-    m_level(new Level())
+	m_level(new Level())
 {
 
 }
@@ -89,16 +101,16 @@ Level::Builder::~Builder()
 
 void Level::Builder::buildObstacle(QSize size, QPoint point, const QPixmap &texture)
 {
-    m_level->m_objects.push_back(
-        new Obstacle(
-            size,
-            point,
-            texture
-        )
-    );
+	m_level->m_objects.push_back(
+			new Obstacle(
+				size,
+				point,
+				texture
+				)
+			);
 }
 
 Level* Level::Builder::getResult()
 {
-    return m_level;
+	return m_level;
 }

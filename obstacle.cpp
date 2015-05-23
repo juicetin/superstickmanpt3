@@ -1,5 +1,8 @@
 #include "obstacle.h"
 
+#include <iostream>
+using namespace std;
+
 Obstacle::Obstacle(QSize size, QPoint spawnAt, const QPixmap &texture) :
     Sprite(texture)
 {
@@ -7,6 +10,11 @@ Obstacle::Obstacle(QSize size, QPoint spawnAt, const QPixmap &texture) :
     setHeight(size.height(), IgnoreAspectRatio);
     setXPosition(spawnAt.x());
     setYPosition(spawnAt.y());
+
+    //Store spawn position of obstacle for resetting
+    setOriginalXPos(spawnAt.x());
+    setOriginalYPos(spawnAt.y());
+    cout << getOriginalXPos() << " " << getOriginalYPos() << endl;
 }
 
 Obstacle::~Obstacle()

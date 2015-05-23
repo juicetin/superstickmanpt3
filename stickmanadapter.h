@@ -2,9 +2,10 @@
 #define STICKMANADAPTER_H
 
 #include "sprite.h"
-
 #include "level.h"
 #include "stickman.h"
+#include "subject.h"
+#include "camera.h"
 
 #include <QPainter>
 
@@ -13,7 +14,7 @@
 //  - collision detection
 //  - consistent coordinate system
 //  - future extensibility (as everything on screen is a sprite)
-class StickmanAdapter : public Sprite
+class StickmanAdapter : public Sprite, public Subject
 {
 public:
     // stores a stickman and adapts it
@@ -41,6 +42,7 @@ private:
     void resolveCollisions(Level* level);
 
 private:
+
     Stickman* m_stickman;
 
     // the up and down velocity, + is up-on-screen

@@ -5,6 +5,9 @@
 #include <QBrush>
 #include <QVector2D>
 
+#include <iostream>
+using namespace std;
+
 Sprite::Sprite(const QPixmap& texture, ColliderType ct) :
     m_texture(texture),
     m_size(texture.size()),
@@ -36,10 +39,12 @@ void Sprite::render(QPainter& painter) const
     QPixmap transformed = m_texture.transformed(scalingTransform);
 
     // Draw the pixmap
+
     painter.drawPixmap(
         screenPos,
         transformed
     );
+
 }
 
 bool Sprite::collidesWith(const Sprite &otherSprite) const
@@ -141,4 +146,24 @@ void Sprite::setHeight(float value, AspectRatioMode mode)
 
 ColliderType Sprite::getColliderType() const {
     return m_colliderType;
+}
+
+float Sprite::getOriginalXPos() const
+{
+    return m_originalXPos;
+}
+
+float Sprite::getOriginalYPos() const
+{
+    return m_originalYPos;
+}
+
+void Sprite::setOriginalXPos(float xpos)
+{
+    m_originalXPos = xpos;
+}
+
+void Sprite::setOriginalYPos(float ypos)
+{
+    m_originalYPos = ypos;
 }

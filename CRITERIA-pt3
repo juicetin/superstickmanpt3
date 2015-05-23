@@ -1,0 +1,57 @@
+* Adding user control for rate at which the character moves
+* Ability to lose - crashing into obstacles will result in loss of life
+* Ability to win - obstacles should no longer repeat 
+	- there should be checkpoins to take you to new levels, and finally win
+* Ability to provide score to user
+* Powerups - should transform stickman into their four personas each which
+  	should provide a possible advantage
+
+PASSING GRADE (50%)
+	* must compile and run in lab (but may use own laptop)
+	* preserve previous two stages' functionality
+	* appropriate use of a behavioural design pattern
+		===STATE PATTERN FOR CHARACTER STATES - MOVING, WALKING JUMPING
+		===STATE PATTERN FOR CHARACTER SIZES/RESULTING BENEFITS
+	* clear code, meaningful variable/method names, informative commenting and
+		documentation
+	* stickman must have configurable number of lives
+		===ADD VARIABLE TO CONFIG===
+		===
+	* when stickman intersects with an obstacle they lose a life and restart the
+		level
+		===YPOS AND DIMENSIONS OF OBSTACLES FIXED. STORE XPOS SINCE LAST
+		COLLISION, AND 'RESTORE' THAT VALUE ON COLLISION 
+		===SIMILARLY FOR XPOS OF BACKGROUND
+		===PERFORM OPERATION IN SPRITE CLASS - AS ALL DRAWABLES INHERIT SPRITE
+	* score must be displayed, showing how well the player is doing (this could
+		be as simple a a timer or as complex as you like)
+		===EXTRA CLASS FOR SCORE AND SCORE DISPLAY?===
+			---score component potentials - time elapsed, factor in life loss,
+			obstacles passed, obstacles avoided, obstacles destroyed, etc.
+
+CREDIT (65%)
+	* user control over the stickman - left and right keys will control
+		character, which will then in turn move background/obstacles
+	* there must be levels (at least 2) and therefore must be checkpoints that
+		you can reach in each level to move you onto the next
+	* a memory efficient design
+
+DISTINCTION (75%)
+	* include power-ups: the power-ups should alternate the stickman between
+		its four states. TINY mode should permit you to walk underneath some
+		obstacles, LARGE should permit you to jump higher than normal mode, 
+		and GIANT mode should make you immune to obstacles - i.e. explode on
+		impact
+		===STATES FOR THE DIFFERENT STICKMAN SIZES VIA ADAPTER===
+			---many different "streams" of states = concurrent state machines
+			needed
+	* a sensible testing framework for your code
+		- testing framework only needs to include stage 3 code
+
+HIGH DISTINCTION (85%)
+	* further power-ups
+	* infinite levels
+		===LOOP THROUGH LEVELS PROVIDED IN CONFIG FOR 'INFINITE' LEVELS
+	* a scoreboard that persists between games
+		===WRITING TO FILE - RAII ON GAME DESTRUCTION MAYBE 
+	* more things with exclamation marks!

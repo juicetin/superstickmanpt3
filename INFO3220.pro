@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     camera.cpp \
     level.cpp \
     stickmanadapter.cpp \
-    stickman.cpp
+    stickman.cpp \
+    subject.cpp
 
 HEADERS  += dialog.h \
     configreader.h \
@@ -41,7 +42,9 @@ HEADERS  += dialog.h \
     camera.h \
     level.h \
     stickmanadapter.h \
-    stickman.h
+    stickman.h \
+    observer.h \
+    subject.h
 
 FORMS    += dialog.ui
 
@@ -53,3 +56,5 @@ filestocopy.files = game.config \
 filestocopy.path = $$OUT_PWD
 
 INSTALLS += filestocopy
+
+CONFIG += c++11

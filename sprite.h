@@ -65,6 +65,13 @@ public:
 
     ColliderType getColliderType() const;
 
+
+    float getOriginalXPos() const;
+    float getOriginalYPos() const;
+
+    void setOriginalXPos(float xpos);
+    void setOriginalYPos(float ypos);
+
 private:
     QPixmap m_texture;
 
@@ -73,6 +80,9 @@ private:
 
     ColliderType m_colliderType;
 
+    float m_originalYPos;
+    float m_originalXPos;
 };
 
 #endif // RENDERABLE_H
+

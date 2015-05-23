@@ -65,80 +65,6 @@ bool Dialog::loadConfiguration(const ConfigReader &reader)
     }
     m_background->setDayDuration(dayDuration);
 
-    // Parse stickman size
-    std::string stickmanSize = reader.get("Stickman", "Size");
-    if (stickmanSize != "tiny" && stickmanSize != "normal" && stickmanSize != "large" && stickmanSize != "giant") {
-        stickmanSize = "normal";
-        successful = false;
-    }
-
-    // Parse stickman sprites
-    std::vector<QPixmap> sprites;
-    std::istringstream ss(reader.get("Stickman", "Sprites").c_str());
-
-    std::string stickmanSpritePath;
-    while (ss >> stickmanSpritePath) {
-        QPixmap sprite;
-        if (!sprite.load(stickmanSpritePath.c_str())) {
-            sprites.clear();
-            break;
-        }
-        sprites.push_back(sprite);
-    }
-
-    if (sprites.empty()) {
-        sprites.push_back(QPixmap(":/resources/flap_up.png"));
-        sprites.push_back(QPixmap(":/resources/flap_down.png"));
-        successful = false;
-    }
-
-    // Now we've got enough information to construct a stickman
-    m_stickman = StickmanFactory::create(stickmanSize, sprites);
-
-    // Parse other stickman properties
-    int stickmanXOffset = QString(reader.get("Stickman", "XOffset").c_str()).toInt(&parseOk);
-    if (!parseOk) {
-        stickmanXOffset = 0;
-        successful = false;
-    }
-    m_stickman->setXOffset(stickmanXOffset);
-
-    float stickmanXVelocity = QString(reader.get("Stickman", "XVelocity").c_str()).toFloat(&parseOk);
-    if (!parseOk) {
-        stickmanXVelocity = 10.0;
-        successful = false;
-    }
-    m_stickman->setXVelocity(stickmanXVelocity);
-
-    int stickmanSpriteDuration = QString(reader.get("Stickman", "SpriteDuration").c_str()).toInt(&parseOk);
-    if (!parseOk || stickmanSpriteDuration <= 0) {
-        stickmanSpriteDuration = 300;
-        successful = false;
-    }
-    m_stickman->setSpriteDuration(stickmanSpriteDuration);
-
-    m_stickmanAdapter = new StickmanAdapter(m_stickman);
-
-    int stickmanMaxJumps = QString(reader.get("Stickman", "MaxJumps").c_str()).toInt(&parseOk);
-    if (!parseOk || stickmanMaxJumps <= 0) {
-        stickmanMaxJumps = 1;
-        successful = false;
-    }
-    m_stickmanAdapter->setMaxJumps(stickmanMaxJumps);
-
-    int stickmanJumpForce = QString(reader.get("Stickman", "JumpForce").c_str()).toInt(&parseOk);
-    if (!parseOk || stickmanJumpForce <= 0) {
-        stickmanJumpForce = 400;
-        successful = false;
-    }
-
-    int stickmanGravity = QString(reader.get("Stickman", "Gravity").c_str()).toInt(&parseOk);
-    if (!parseOk || stickmanGravity <= 0) {
-        stickmanGravity = 1500;
-        successful = false;
-    }
-
-
     // load level
     int rangeStart = QString(reader.get("Level", "RangeStart").c_str()).toInt(&parseOk);
     if (!parseOk || rangeStart < 0) {
@@ -220,6 +146,80 @@ bool Dialog::loadConfiguration(const ConfigReader &reader)
     }
 
     m_level = levelBuilder.getResult();
+
+    // Parse stickman size
+    std::string stickmanSize = reader.get("Stickman", "Size");
+    if (stickmanSize != "tiny" && stickmanSize != "normal" && stickmanSize != "large" && stickmanSize != "giant") {
+        stickmanSize = "normal";
+        successful = false;
+    }
+
+    // Parse stickman sprites
+    std::vector<QPixmap> sprites;
+    std::istringstream ss(reader.get("Stickman", "Sprites").c_str());
+
+    std::string stickmanSpritePath;
+    while (ss >> stickmanSpritePath) {
+        QPixmap sprite;
+        if (!sprite.load(stickmanSpritePath.c_str())) {
+            sprites.clear();
+            break;
+        }
+        sprites.push_back(sprite);
+    }
+
+    if (sprites.empty()) {
+        sprites.push_back(QPixmap(":/resources/flap_up.png"));
+        sprites.push_back(QPixmap(":/resources/flap_down.png"));
+        successful = false;
+    }
+
+    // Now we've got enough information to construct a stickman
+    m_stickman = StickmanFactory::create(stickmanSize, sprites);
+
+    // Parse other stickman properties
+    int stickmanXOffset = QString(reader.get("Stickman", "XOffset").c_str()).toInt(&parseOk);
+    if (!parseOk) {
+        stickmanXOffset = 0;
+        successful = false;
+    }
+    m_stickman->setXOffset(stickmanXOffset);
+
+    float stickmanXVelocity = QString(reader.get("Stickman", "XVelocity").c_str()).toFloat(&parseOk);
+    if (!parseOk) {
+        stickmanXVelocity = 10.0;
+        successful = false;
+    }
+    m_stickman->setXVelocity(stickmanXVelocity);
+
+    int stickmanSpriteDuration = QString(reader.get("Stickman", "SpriteDuration").c_str()).toInt(&parseOk);
+    if (!parseOk || stickmanSpriteDuration <= 0) {
+        stickmanSpriteDuration = 300;
+        successful = false;
+    }
+    m_stickman->setSpriteDuration(stickmanSpriteDuration);
+
+    m_stickmanAdapter = new StickmanAdapter(m_stickman);
+    // m_stickmanAdapter->addObserver(&Camera::getInstance());
+
+    int stickmanMaxJumps = QString(reader.get("Stickman", "MaxJumps").c_str()).toInt(&parseOk);
+    if (!parseOk || stickmanMaxJumps <= 0) {
+        stickmanMaxJumps = 0;
+        successful = false;
+    }
+    m_stickmanAdapter->setMaxJumps(stickmanMaxJumps);
+
+    int stickmanJumpForce = QString(reader.get("Stickman", "JumpForce").c_str()).toInt(&parseOk);
+    if (!parseOk || stickmanJumpForce <= 0) {
+        stickmanJumpForce = 400;
+        successful = false;
+    }
+
+    int stickmanGravity = QString(reader.get("Stickman", "Gravity").c_str()).toInt(&parseOk);
+    if (!parseOk || stickmanGravity <= 0) {
+        stickmanGravity = 1500;
+        successful = false;
+    }
 
     return successful;
 }

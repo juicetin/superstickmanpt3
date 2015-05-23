@@ -1,4 +1,4 @@
-#ifndef BACKGROUND_H
+ #ifndef BACKGROUND_H
 #define BACKGROUND_H
 
 #include <QPainter>
