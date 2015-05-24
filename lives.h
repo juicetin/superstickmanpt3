@@ -15,7 +15,7 @@ public:
     Lives(int lives);
 	void onNotify();
     void render(QPainter &qpainter);
-    void update();
+    bool update();
 
 private:
 	int m_lives;

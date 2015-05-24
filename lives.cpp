@@ -22,10 +22,11 @@ void Lives::render(QPainter &painter)
     painter.drawStaticText(0, 30, q_lives);
 }
 
-void Lives::update()
+bool Lives::update()
 {
 	if (m_lives < 1)
 	{
-		exit(0);
+        return true;
 	}
+    return false;
 }

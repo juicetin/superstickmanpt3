@@ -6,5 +6,8 @@
         <file>resources/background.png</file>
         <file>resources/pipe_ground.png</file>
         <file>resources/block_brown.png</file>
+        <file>resources/block_goal.png</file>
+        <file>resources/won.png</file>
+        <file>resources/lost.png</file>
     </qresource>
 </RCC>

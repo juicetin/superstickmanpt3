@@ -8,6 +8,7 @@
 #include <QPoint>
 
 #include <vector>
+#include <algorithm>
 
 // A container for all level objects.
 // An associated builder - Level::Builder is used to create a level.
@@ -43,6 +44,9 @@ public:
 
     // returns the smallest rectangle that surrounds all level objects
     QRect rect() const;
+
+    // determines whether the sprite in question is the last, and hence, the goal
+    bool checkGoalReached(const Sprite *sprite) const;
 
 private:
     // all objects in the level

@@ -25,7 +25,7 @@ public:
     virtual void render(QPainter &painter) const;
 
     // update the adapter code and stickman
-    virtual void update(int ms, Level* level);
+    virtual bool update(int ms, Level* level, bool stage_three);
 
     // adds a upward force to the player
     virtual void jump();
@@ -35,13 +35,14 @@ public:
     void setJumpForce(int value);
 
     void setXVelocity(float value);
+    void resetPosition();
 
 private:
     // hide the original stickman update, we need to know about Level
     void update(int ms) { (void)ms; }
 
     // resolves any collisions Stickman has with the level
-    void resolveCollisions(Level* level);
+    bool resolveCollisions(Level* level, bool stage_three);
 
 private:
 

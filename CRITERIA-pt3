@@ -28,11 +28,16 @@ DONE* score must be displayed, showing how well the player is doing (this could
 		---Score class printed on screen - simply a timer
 
 CREDIT (65%)
-	* user control over the stickman - left and right keys will control
+DONE* user control over the stickman - left and right keys will control
 		character, which will then in turn move background/obstacles
 	* there must be levels (at least 2) and therefore must be checkpoints that
 		you can reach in each level to move you onto the next
 	* a memory efficient design
+		---Loading levels only as previous ones are completed (only thing that is
+			stored are the paths to configs for following levels) - very efficient
+			in the sense that a theoretically near-infinite number of levels can
+			be stored as there won't be X level objects all generated and stored 
+			at the very beginning
 
 DISTINCTION (75%)
 	* include power-ups: the power-ups should alternate the stickman between

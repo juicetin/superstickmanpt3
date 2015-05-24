@@ -75,6 +75,20 @@ QRect Level::rect() const {
     return QRect(minX, minY, maxX - minX, maxY - minY);
 }
 
+bool Level::checkGoalReached(const Sprite *sprite) const
+{
+    std::vector<Sprite*>::const_iterator it = std::find(m_objects.begin(), m_objects.end(), sprite);
+    if (it != m_objects.end())
+    {
+        it++;
+        if (it == m_objects.end())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 //###################################################################
 // Everything below is the Level::Builder
 //###################################################################

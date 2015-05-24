@@ -1,18 +1,20 @@
-#define _USE_MATH_DEFINES
+    #define _USE_MATH_DEFINES
 #include <cmath>
 
 #include "stickmanadapter.h"
 
 #include <QVector2D>
+#include <iostream>
+using namespace std;
 
 StickmanAdapter::StickmanAdapter(Stickman* stickman) :
-    m_stickman(stickman),
-    m_yVelocity(0),
-    m_jumpForce(400.0f),
-    m_gravity(1500.0f),
-    m_currJumpCount(0),
-    m_maxJumpCount(2),
-    Sprite(stickman->getSprite())
+m_stickman(stickman),
+m_yVelocity(0),
+m_jumpForce(400.0f),
+m_gravity(1500.0f),
+m_currJumpCount(0),
+m_maxJumpCount(2),
+Sprite(stickman->getSprite())
 {
     Sprite::setXPosition(0.0f);
     // set the exact dimensions of the sprite according to stickman
@@ -41,7 +43,7 @@ float clampf(float value, float min, float max) {
     return value;
 }
 
-void StickmanAdapter::resolveCollisions(Level *level) {
+bool StickmanAdapter::resolveCollisions(Level *level, bool stage_three) {
     const Sprite* sprite = 0;
 
     // find colliding sprites, and resolve them by:
@@ -49,11 +51,16 @@ void StickmanAdapter::resolveCollisions(Level *level) {
     // appropriate way to move out of the collision
     while ((sprite = level->findCollidingObjects(dynamic_cast<Sprite*>(this))) != 0) {
 
+        if (level->checkGoalReached(sprite))
+        {
+            return true;
+        }
+
         // find the closest point in sprite to the stickman's centre
         QVector2D closestPoint(
             clampf(getXPosition(), sprite->getBoundingRect().left(), sprite->getBoundingRect().right()),
             clampf(getYPosition(), sprite->getBoundingRect().top(), sprite->getBoundingRect().bottom())
-        );
+            );
 
         // the direction from that point to us
         QVector2D collisionDir = QVector2D(getXPosition(), getYPosition()) - closestPoint;
@@ -99,24 +106,33 @@ void StickmanAdapter::resolveCollisions(Level *level) {
         }
 
         // Resets from collision only occur when hitting the right/left sides
-        if (wanted_collision)
+        if (wanted_collision && stage_three)
         {
             notify();
-            setXPosition(0);
+            resetPosition();
+            break;
         }
     }
+    return false;
 }
 
-void StickmanAdapter::update(int ms, Level* level)
+bool StickmanAdapter::update(int ms, Level* level, bool stage_three)
 {
     m_stickman->update(ms);
 
     // update the positions with the velocities
-    setXPosition(getXPosition() + m_stickman->getXVelocity() * (ms / 1000.0));
+    if (getXPosition() < 0)
+    {
+        setXPosition(0);
+    }
+    else
+    {
+        setXPosition(getXPosition() + m_stickman->getXVelocity() * (ms / 1000.0));
+    }
     setYPosition(getYPosition() + m_yVelocity * (ms / 1000.0));
 
 
-    resolveCollisions(level);
+    bool check_goal = resolveCollisions(level, stage_three);
 
 
     // change the sprite to the current sprite (the stickman is animated)
@@ -130,6 +146,8 @@ void StickmanAdapter::update(int ms, Level* level)
         m_currJumpCount = 0;
         setYPosition(0 + (m_stickman->getHeight() / 2));
     }
+
+    return check_goal;
 }
 
 void StickmanAdapter::jump() {
@@ -154,4 +172,10 @@ void StickmanAdapter::setJumpForce(int value) {
 void StickmanAdapter::setXVelocity(float value)
 {
     m_stickman->setXVelocity(value);
+}
+
+void StickmanAdapter::resetPosition()
+{
+    setXPosition(0);
+    setYPosition(0);
 }

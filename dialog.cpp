@@ -15,6 +15,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <cstdlib>
+using namespace std;
 
 bool Dialog::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
 {
@@ -61,7 +63,7 @@ bool Dialog::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
         ss >> name;
         ss >> gap;
         ss >> height;
-
+        
         /* Sprite image path*/
         std::string obstacleSprite = reader.get(name, "Sprite");
         if (!parseOk || obstacleSprite == "") {
@@ -287,7 +289,11 @@ m_stickmanAdapter(NULL),
 m_background(NULL),
 m_paused(false),
 m_pauseImage(":/resources/paused.png"),
-m_moving(false)
+m_lostImage(":/resources/lost.png"),
+m_wonImage(":/resources/won.png"),
+m_moving(false),
+m_lost(false),
+m_won(false)
 {
     ui->setupUi(this);
 
@@ -305,8 +311,6 @@ m_moving(false)
         + "Base directory was '" + QDir::currentPath().toStdString() + "'";
         QMessageBox::warning(this, "Error", errorMessage.c_str());
     }
-
-
 
     if (m_stageThreeEnabled)
     {
@@ -346,9 +350,28 @@ void Dialog::nextFrame()
         int ms = m_time.restart();
 
         // Update our entities
-        m_stickmanAdapter->update(ms, m_level);
         m_background->update(ms);
         m_level->update(ms);
+        bool check_goal = m_stickmanAdapter->update(ms, m_level, m_stageThreeEnabled);
+
+        //Load new level if goal in level has been reached
+        if (check_goal)
+        {
+            m_levelConfigIterator++;
+            if (m_levelConfigIterator == m_levelConfigs.end())
+            {
+                m_won = true;
+                m_paused = true;
+            }
+            else
+            {
+                ConfigReader level_reader(*m_levelConfigIterator);
+                Level::Builder levelBuilder;
+                loadLevel(levelBuilder, level_reader);
+                m_level = levelBuilder.getResult();
+                m_stickmanAdapter->resetPosition();
+            }
+        }
 
         // Point the camera at the player (with an offset)
         Camera::getInstance().setXPosition(m_stickmanAdapter->getXPosition() + this->width() / 2 - m_stickman->getXOffset());
@@ -380,7 +403,10 @@ void Dialog::paintEvent(QPaintEvent *)
     {
         m_score.render(painter);
         m_lives->render(painter);
-        m_lives->update();
+        if (m_lost = m_lives->update())
+        {
+            m_paused = true;
+        }
     }
 
     if (m_paused) {
@@ -390,13 +416,28 @@ void Dialog::paintEvent(QPaintEvent *)
 
         int x = painter.device()->width() / 2 - m_pauseImage.width() / 2;
         int y = painter.device()->height() / 2 - m_pauseImage.height() / 2;
-        painter.drawImage(x, y, m_pauseImage);
+
+        if (m_won)
+        {
+            painter.drawImage(x, y, m_wonImage);
+        }
+        else if (m_lost)
+        {
+            painter.drawImage(x, y, m_lostImage);
+        }
+        else
+        {
+            painter.drawImage(x, y, m_pauseImage);
+        }
     }
 }
 
 void Dialog::keyPressEvent(QKeyEvent *e)
 {
-    if (m_pauseScreenEnabled && e->key() == Qt::Key_Escape)
+    if (m_pauseScreenEnabled &&
+        !m_won &&
+        !m_lost && 
+        e->key() == Qt::Key_Escape)
     {
         m_paused = !m_paused;
     }
@@ -411,13 +452,13 @@ void Dialog::keyPressEvent(QKeyEvent *e)
         m_stickmanAdapter->jump();
     }
 
-    if (e->key() == Qt::Key_Left)
+    if (m_stageThreeEnabled && e->key() == Qt::Key_Left)
     {
         m_stickmanAdapter->setXVelocity(-170);
         m_moving = true;
     }
 
-    if (e->key() == Qt::Key_Right)
+    if (m_stageThreeEnabled && e->key() == Qt::Key_Right)
     {
         m_stickmanAdapter->setXVelocity(170);
         m_moving = true;
@@ -426,7 +467,7 @@ void Dialog::keyPressEvent(QKeyEvent *e)
 
 void Dialog::keyReleaseEvent(QKeyEvent *e)
 {
-    if (e->key() == Qt::Key_Left || e->key() == Qt::Key_Right)
+    if (m_stageThreeEnabled && (e->key() == Qt::Key_Left || e->key() == Qt::Key_Right))
     {
         m_stickmanAdapter->setXVelocity(0);
         m_moving = false;

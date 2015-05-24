@@ -47,11 +47,15 @@ private:
     Background *m_background;
 
     bool m_paused;
+    bool m_lost;
+    bool m_won;
     bool m_pauseScreenEnabled;
     bool m_stageThreeEnabled;
     bool m_moving;
 
     QImage m_pauseImage;
+    QImage m_lostImage;
+    QImage m_wonImage;
 
     Level* m_level;
     std::vector<std::string> m_levelConfigs;
