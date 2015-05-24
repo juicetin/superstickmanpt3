@@ -14,7 +14,6 @@ Obstacle::Obstacle(QSize size, QPoint spawnAt, const QPixmap &texture) :
     //Store spawn position of obstacle for resetting
     setOriginalXPos(spawnAt.x());
     setOriginalYPos(spawnAt.y());
-    cout << getOriginalXPos() << " " << getOriginalYPos() << endl;
 }
 
 Obstacle::~Obstacle()

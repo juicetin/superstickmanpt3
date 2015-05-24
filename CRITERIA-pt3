@@ -1,4 +1,4 @@
-	* Adding user control for rate at which the character moves
+* Adding user control for rate at which the character moves
 * Ability to lose - crashing into obstacles will result in loss of life
 * Ability to win - obstacles should no longer repeat 
 	- there should be checkpoins to take you to new levels, and finally win

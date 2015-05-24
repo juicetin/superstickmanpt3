@@ -14,6 +14,7 @@ public:
     Score();
     void onNotify();
     void render(QPainter &qpainter);
+    void update();
 
 private:
     int m_score;

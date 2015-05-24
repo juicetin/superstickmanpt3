@@ -19,5 +19,9 @@ void Score::render(QPainter &painter)
 
     QStaticText q_score(score_text.c_str());
     painter.drawStaticText(0, 0, q_score);
-    m_score++;
+}
+
+void Score::update()
+{
+	m_score++;
 }

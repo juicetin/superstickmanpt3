@@ -16,6 +16,93 @@
 #include <sstream>
 #include <string>
 
+bool Dialog::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
+{
+
+    bool parseOk = false;
+    bool successful = true;
+    
+    int rangeStart = QString(reader.get("Level", "RangeStart").c_str()).toInt(&parseOk);
+    if (!parseOk || rangeStart < 0) {
+        rangeStart = 0;
+        successful = false;
+    }
+
+    int rangeEnd = QString(reader.get("Level", "RangeEnd").c_str()).toInt(&parseOk);
+    if (!parseOk || rangeEnd < 0) {
+        rangeEnd = 0;
+        successful = false;
+    }
+
+    int unitsInPixels = QString(reader.get("Level", "UnitsInPixels").c_str()).toInt(&parseOk);
+    if (!parseOk || unitsInPixels < 0) {
+        unitsInPixels = 32;
+        successful = false;
+    }
+    
+    float obstaclePosition = this->width();
+    int previousWidth = 0;
+    int i = rangeStart;
+    while (i <= rangeEnd) {
+        std::stringstream indexStream;
+        indexStream << i;
+
+        std::string pair = reader.get("Level", indexStream.str());
+        if (pair.empty()) {
+            break;
+        }
+
+        std::istringstream ss(pair.c_str());
+
+        std::string name;
+        int gap;
+        int height;
+
+        ss >> name;
+        ss >> gap;
+        ss >> height;
+
+        /* Sprite image path*/
+        std::string obstacleSprite = reader.get(name, "Sprite");
+        if (!parseOk || obstacleSprite == "") {
+            std::cerr << "error: [" << name << "]: Sprite was not set." << std::endl;
+            obstacleSprite = ":/resources/block_brown.png";
+            successful = false;
+        }
+
+        /* Obstacle width */
+        int obstacleWidth = QString(reader.get(name, "Width").c_str()).toInt(&parseOk);
+        if (!parseOk || obstacleWidth < 0) {
+            std::cerr << "error: [" << name << "]: width was not an integer." << std::endl;
+            obstacleWidth = 1;
+            successful = false;
+        }
+
+
+        int obstacleHeight = QString(reader.get(name, "Height").c_str()).toInt(&parseOk);
+        if (!parseOk || obstacleHeight < 0) {
+            std::cerr << "error: [" << name << "]: height was not an integer." << std::endl;
+            obstacleHeight = 1;
+            successful = false;
+        }
+
+        obstaclePosition += ((previousWidth / 2.0f) + (obstacleWidth / 2.0f)) * unitsInPixels;
+        previousWidth = obstacleWidth;
+
+        levelBuilder.buildObstacle(
+            QSize(obstacleWidth * unitsInPixels, obstacleHeight * unitsInPixels),
+            QPoint(obstaclePosition, (obstacleHeight * unitsInPixels / 2.0f) + height * unitsInPixels),
+            QPixmap(obstacleSprite.c_str())
+            );
+
+        obstaclePosition += gap * unitsInPixels;
+
+        i++;
+    }
+
+    return successful;
+}
+
 bool Dialog::loadConfiguration(const ConfigReader &reader)
 {
     bool successful = true;
@@ -37,6 +124,7 @@ bool Dialog::loadConfiguration(const ConfigReader &reader)
     }
     m_pauseScreenEnabled = (pauseScreenStatus == "on");
 
+    // Check for stage 3 or 1/2 compatability mode
     std::string stageThreeStatus = reader.get("Game", "Stage3");
     if (stageThreeStatus != "on") {
         stageThreeStatus = "off";
@@ -72,87 +160,39 @@ bool Dialog::loadConfiguration(const ConfigReader &reader)
     }
     m_background->setDayDuration(dayDuration);
 
-    // Load Level
-    int rangeStart = QString(reader.get("Level", "RangeStart").c_str()).toInt(&parseOk);
-    if (!parseOk || rangeStart < 0) {
-        rangeStart = 0;
-        successful = false;
-    }
-
-    int rangeEnd = QString(reader.get("Level", "RangeEnd").c_str()).toInt(&parseOk);
-    if (!parseOk || rangeEnd < 0) {
-        rangeEnd = 0;
-        successful = false;
-    }
-
-    int unitsInPixels = QString(reader.get("Level", "UnitsInPixels").c_str()).toInt(&parseOk);
-    if (!parseOk || unitsInPixels < 0) {
-        unitsInPixels = 32;
-        successful = false;
-    }
-
+    /*************************************************************************************/
+    /***************************    LOAD ALL OBSTACLES    ********************************/
+    /*************************************************************************************/
     Level::Builder levelBuilder;
+    loadLevel(levelBuilder, reader);
+    m_level = levelBuilder.getResult();
+    /*************************************************************************************/
 
-    float obstaclePosition = this->width();
 
-    int previousWidth = 0;
+    /*************************************************************************************/
+    /*****************************    LOAD ALL LEVELS    *********************************/
+    /*************************************************************************************/
 
-    int i = rangeStart;
-    while (i <= rangeEnd) {
-        std::stringstream indexStream;
-        indexStream << i;
-
-        std::string pair = reader.get("Level", indexStream.str());
-        if (pair.empty()) {
-            break;
-        }
-
-        std::istringstream ss(pair.c_str());
-
-        std::string name;
-        int gap;
-        int height;
-
-        ss >> name;
-        ss >> gap;
-        ss >> height;
-
-        std::string obstacleSprite = reader.get(name, "Sprite");
-        if (!parseOk || obstacleSprite == "") {
-            std::cerr << "error: [" << name << "]: Sprite was not set." << std::endl;
-            obstacleSprite = ":/resources/block_brown.png";
-            successful = false;
-        }
-
-        int obstacleWidth = QString(reader.get(name, "Width").c_str()).toInt(&parseOk);
-        if (!parseOk || obstacleWidth < 0) {
-            std::cerr << "error: [" << name << "]: width was not an integer." << std::endl;
-            obstacleWidth = 1;
-            successful = false;
-        }
-
-        int obstacleHeight = QString(reader.get(name, "Height").c_str()).toInt(&parseOk);
-        if (!parseOk || obstacleHeight < 0) {
-            std::cerr << "error: [" << name << "]: height was not an integer." << std::endl;
-            obstacleHeight = 1;
-            successful = false;
-        }
-
-        obstaclePosition += ((previousWidth / 2.0f) + (obstacleWidth / 2.0f)) * unitsInPixels;
-        previousWidth = obstacleWidth;
-
-        levelBuilder.buildObstacle(
-            QSize(obstacleWidth * unitsInPixels, obstacleHeight * unitsInPixels),
-            QPoint(obstaclePosition, (obstacleHeight * unitsInPixels / 2.0f) + height * unitsInPixels),
-            QPixmap(obstacleSprite.c_str())
-            );
-
-        obstaclePosition += gap * unitsInPixels;
-
-        i++;
+    //  Memory efficient design - not loading all levels at the get-go, but instead load
+    //  as each level is completed
+    int numLevels = QString(reader.get("Levels", "Levels").c_str()).toInt(&parseOk);
+    if (!parseOk || numLevels < 1) {
+        numLevels = 0;
+        // Disable stage 3 if no levels are present - default to stage 1/2 compatability if
+        // no levels are provided. I.e. use any obstacles that may be present from stage 2  
+        m_stageThreeEnabled = false;    
+        successful = false;
     }
 
-    m_level = levelBuilder.getResult();
+    for (int i = 1; i <= numLevels; ++i)
+    {
+        std::stringstream ss;
+        ss << i;
+        std::string file_path = QString( reader.get("Levels", ss.str().c_str()).c_str()).toStdString();
+        m_levelConfigs.push_back(file_path);
+    }
+    /*************************************************************************************/
+
 
     // Parse stickman size
     std::string stickmanSize = reader.get("Stickman", "Size");
@@ -197,7 +237,8 @@ bool Dialog::loadConfiguration(const ConfigReader &reader)
         stickmanXVelocity = 10.0;
         successful = false;
     }
-    m_stickman->setXVelocity(stickmanXVelocity);
+    if (m_stageThreeEnabled) { m_stickman->setXVelocity(0); }
+    else { m_stickman->setXVelocity(stickmanXVelocity); }
 
     int stickmanSpriteDuration = QString(reader.get("Stickman", "SpriteDuration").c_str()).toInt(&parseOk);
     if (!parseOk || stickmanSpriteDuration <= 0) {
@@ -236,8 +277,6 @@ bool Dialog::loadConfiguration(const ConfigReader &reader)
         successful = false;
     }
 
-    // Scorekeeper
-
     return successful;
 }
 
@@ -247,7 +286,8 @@ ui(new Ui::Dialog),
 m_stickmanAdapter(NULL),
 m_background(NULL),
 m_paused(false),
-m_pauseImage(":/resources/paused.png")
+m_pauseImage(":/resources/paused.png"),
+m_moving(false)
 {
     ui->setupUi(this);
 
@@ -264,6 +304,17 @@ m_pauseImage(":/resources/paused.png")
             errorMessage = std::string("Could not open configuration file '") + configFilePath + "'. Using default settings. \n"
         + "Base directory was '" + QDir::currentPath().toStdString() + "'";
         QMessageBox::warning(this, "Error", errorMessage.c_str());
+    }
+
+
+
+    if (m_stageThreeEnabled)
+    {
+        m_levelConfigIterator = m_levelConfigs.begin();
+        ConfigReader level_reader(*m_levelConfigIterator);
+        Level::Builder levelBuilder;
+        loadLevel(levelBuilder, level_reader);
+        m_level = levelBuilder.getResult();
     }
 
     // Create a timer to update and redraw at regular intervals.
@@ -284,6 +335,7 @@ Dialog::~Dialog()
     delete m_stickmanAdapter;
     delete ui;
     delete m_lives;
+    delete m_level;
 }
 
 void Dialog::nextFrame()
@@ -304,6 +356,10 @@ void Dialog::nextFrame()
         // if we have passed the level, reset the player to 0 to play again
         if ( (m_level->rect().right()) < m_stickmanAdapter->getXPosition() - m_stickman->getXOffset()) {
             m_stickmanAdapter->setXPosition(0);
+        }
+
+        if (m_moving) {
+            m_score.update();
         }
     }
 
@@ -341,11 +397,38 @@ void Dialog::paintEvent(QPaintEvent *)
 void Dialog::keyPressEvent(QKeyEvent *e)
 {
     if (m_pauseScreenEnabled && e->key() == Qt::Key_Escape)
+    {
         m_paused = !m_paused;
+    }
 
     if (e->key() == Qt::Key_Q)
+    {
         this->close();
+    }
 
     if (e->key() == Qt::Key_Space)
+    {
         m_stickmanAdapter->jump();
+    }
+
+    if (e->key() == Qt::Key_Left)
+    {
+        m_stickmanAdapter->setXVelocity(-170);
+        m_moving = true;
+    }
+
+    if (e->key() == Qt::Key_Right)
+    {
+        m_stickmanAdapter->setXVelocity(170);
+        m_moving = true;
+    }
+}
+
+void Dialog::keyReleaseEvent(QKeyEvent *e)
+{
+    if (e->key() == Qt::Key_Left || e->key() == Qt::Key_Right)
+    {
+        m_stickmanAdapter->setXVelocity(0);
+        m_moving = false;
+    }
 }
