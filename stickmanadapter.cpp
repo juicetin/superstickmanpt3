@@ -24,7 +24,7 @@ Sprite(stickman->getSprite())
 
 StickmanAdapter::~StickmanAdapter()
 {
-
+    delete m_stickman;
 }
 
 void StickmanAdapter::render(QPainter &painter) const

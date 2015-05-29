@@ -14,7 +14,10 @@ Level::Level()
 
 Level::~Level()
 {
-
+    for (auto it = m_objects.begin(); it != m_objects.end(); ++it)
+    {
+        delete *it;
+    }
 }
 
 void Level::update(int ms)
@@ -94,28 +97,29 @@ bool Level::checkGoalReached(const Sprite *sprite) const
 //###################################################################
 
 Level::Builder::Builder() :
-	m_level(new Level())
+    m_level(new Level())
 {
 
 }
 
 Level::Builder::~Builder()
 {
-
+    //TODO - FIX MEMORY LEAK HERE, NEED TO DELETE M_LEVEL
+//    delete m_level;
 }
 
 void Level::Builder::buildObstacle(QSize size, QPoint point, const QPixmap &texture)
 {
-	m_level->m_objects.push_back(
-			new Obstacle(
-				size,
-				point,
-				texture
-				)
-			);
+    m_level->m_objects.push_back(
+                new Obstacle(
+                    size,
+                    point,
+                    texture
+                    )
+                );
 }
 
 Level* Level::Builder::getResult()
 {
-	return m_level;
+    return m_level;
 }
