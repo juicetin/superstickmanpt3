@@ -170,9 +170,24 @@ void StickmanAdapter::setJumpForce(int value) {
     m_jumpForce = value;
 }
 
-void StickmanAdapter::setXVelocity(float value)
+//void StickmanAdapter::setXVelocity(float value)
+//{
+//    m_stickman->setXVelocity(value);
+//}
+
+void StickmanAdapter::moveRight()
 {
-    m_stickman->setXVelocity(value);
+	m_stickman->setXVelocity(170);
+}
+
+void StickmanAdapter::moveLeft()
+{
+	m_stickman->setXVelocity(-170);
+}
+
+void StickmanAdapter::stop()
+{
+	m_stickman->setXVelocity(0);
 }
 
 void StickmanAdapter::resetPosition()
@@ -180,3 +195,5 @@ void StickmanAdapter::resetPosition()
     setXPosition(0);
     setYPosition(0);
 }
+
+

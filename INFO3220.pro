@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     subject.cpp \
     score.cpp \
     lives.cpp \
-    game.cpp
+    game.cpp \
+    inputhandler.cpp
 
 HEADERS  += dialog.h \
     configreader.h \
@@ -50,7 +51,9 @@ HEADERS  += dialog.h \
     subject.h \
     score.h \
     lives.h \
-    game.h
+    game.h \
+    command.h \
+    inputhandler.h
 
 FORMS    += dialog.ui
 

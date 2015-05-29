@@ -34,8 +34,10 @@ public:
     void setGravity(int value);
     void setJumpForce(int value);
 
-    void setXVelocity(float value);
     void resetPosition();
+	void moveRight();
+	void moveLeft();
+	void stop();
 
 private:
     // hide the original stickman update, we need to know about Level

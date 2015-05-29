@@ -395,3 +395,48 @@ void Game::render(QPainter &painter)
 		}
 	}
 }
+
+StickmanAdapter *Game::getStickman()
+{
+	return m_stickmanAdapter;
+}
+
+bool Game::pausedState()
+{
+	return m_paused;
+}
+
+bool Game::pauseEnabled()
+{
+	return m_pauseScreenEnabled;
+}
+
+bool Game::wonState()
+{
+	return m_won;
+}
+
+bool Game::lostState()
+{
+	return m_lost;
+}
+
+bool Game::stage3State()
+{
+	return m_stageThreeEnabled;
+}
+
+void Game::charMoving()
+{
+	m_moving = true;
+}
+
+void Game::charNotMoving()
+{
+	m_moving = false;
+}
+
+void Game::switchPaused()
+{
+	m_paused = !m_paused;
+}

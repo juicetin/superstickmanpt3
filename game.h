@@ -25,12 +25,21 @@
 class Game
 {
 	public:
-        friend class Dialog;
 		Game(QDialog *dialog);
 		bool loadConfiguration(const ConfigReader &reader);
 		bool loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader);
         void update(QTime &time);
 		void render(QPainter &painter);
+
+		StickmanAdapter *getStickman();
+		bool pausedState();
+		bool pauseEnabled();
+		bool wonState();
+		bool lostState();
+		bool stage3State();
+		void charMoving();
+		void charNotMoving();
+		void switchPaused();
 
     private:
         int m_timerMs;

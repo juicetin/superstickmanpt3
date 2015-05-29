@@ -9,11 +9,19 @@
 #include "score.h"
 #include "lives.h"
 #include "game.h"
+#include "inputhandler.h"
 
 #include <QDialog>
 #include <QKeyEvent>
 #include <QTime>
 #include <vector>
+#include <ui_dialog.h>
+#include <QPainter>
+#include <QTimer>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <cstdlib>
 
 namespace Ui {
 class Dialog;
@@ -36,15 +44,13 @@ protected:
     void keyReleaseEvent(QKeyEvent *e);
 
 private:
-
 	Game *m_game;
     Ui::Dialog *ui;
 
-    // Reads from a configuration file and initialises the game.
-    // Returns false if there are settings missing, in which case default values are used.
-
     int m_timerMs;
     QTime m_time;
+
+
 };
 
 #endif // DIALOG_H

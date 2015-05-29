@@ -4,18 +4,6 @@
 #include "configreader.h"
 #include "stickmanfactory.h"
 
-#include <ui_dialog.h>
-#include <QDir>
-#include <QMessageBox>
-#include <QPainter>
-#include <QPixmap>
-#include <QTimer>
-#include <QStaticText>
-
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <cstdlib>
 using namespace std;
 
 Dialog::Dialog(QWidget *parent) :
@@ -52,12 +40,18 @@ void Dialog::paintEvent(QPaintEvent *)
 
 void Dialog::keyPressEvent(QKeyEvent *e)
 {
-    if (m_game->m_pauseScreenEnabled &&
-        !m_game->m_won &&
-        !m_game->m_lost &&
+	InputHandler inputHandler;
+	Command *command = inputHandler.handleInput(*e);
+	if (command)
+	{
+		// command->execute(actor);
+	}
+    if (m_game->pauseEnabled() &&
+        !m_game->wonState() &&
+        !m_game->lostState() &&
         e->key() == Qt::Key_Escape)
     {
-        m_game->m_paused = !m_game->m_paused;
+		m_game->switchPaused();
     }
 
     if (e->key() == Qt::Key_Q)
@@ -67,27 +61,27 @@ void Dialog::keyPressEvent(QKeyEvent *e)
 
     if (e->key() == Qt::Key_Space)
     {
-        m_game->m_stickmanAdapter->jump();
+		m_game->getStickman()->jump();
     }
 
-    if (m_game->m_stageThreeEnabled && e->key() == Qt::Key_Left)
+    if (m_game->stage3State() && e->key() == Qt::Key_Left)
     {
-        m_game->m_stickmanAdapter->setXVelocity(-170);
-        m_game->m_moving = true;
+		m_game->getStickman()->moveLeft();
+		m_game->charMoving();
     }
 
-    if (m_game->m_stageThreeEnabled && e->key() == Qt::Key_Right)
+    if (m_game->stage3State() && e->key() == Qt::Key_Right)
     {
-        m_game->m_stickmanAdapter->setXVelocity(170);
-        m_game->m_moving = true;
+		m_game->getStickman()->moveRight();
+		m_game->charMoving();
     }
 }
 
 void Dialog::keyReleaseEvent(QKeyEvent *e)
 {
-    if (m_game->m_stageThreeEnabled && (e->key() == Qt::Key_Left || e->key() == Qt::Key_Right))
+    if (m_game->stage3State() && (e->key() == Qt::Key_Left || e->key() == Qt::Key_Right))
     {
-        m_game->m_stickmanAdapter->setXVelocity(0);
-        m_game->m_moving = false;
+		m_game->getStickman()->stop();
+		m_game->charNotMoving();
     }
 }
