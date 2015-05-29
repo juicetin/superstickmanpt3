@@ -31,7 +31,12 @@ SOURCES += main.cpp\
     score.cpp \
     lives.cpp \
     game.cpp \
-    inputhandler.cpp
+    inputhandler.cpp \
+    pausecommand.cpp \
+    quitcommand.cpp \
+    jumpcommand.cpp \
+    moveleftcommand.cpp \
+    moverightcommand.cpp
 
 HEADERS  += dialog.h \
     configreader.h \
@@ -53,7 +58,12 @@ HEADERS  += dialog.h \
     lives.h \
     game.h \
     command.h \
-    inputhandler.h
+    inputhandler.h \
+    pausecommand.h \
+    quitcommand.h \
+    jumpcommand.h \
+    moveleftcommand.h \
+    moverightcommand.h
 
 FORMS    += dialog.ui
 

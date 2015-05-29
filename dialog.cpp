@@ -1,16 +1,9 @@
 #include "dialog.h"
 
-#include "camera.h"
-#include "configreader.h"
-#include "stickmanfactory.h"
-
-using namespace std;
-
 Dialog::Dialog(QWidget *parent) :
 QDialog(parent),
 ui(new Ui::Dialog),
-m_game(NULL)
-
+m_inputhandler(new InputHandler())
 {
     ui->setupUi(this);
     m_game = new Game(this);
@@ -24,6 +17,7 @@ Dialog::~Dialog()
 {
 	delete m_game;
     delete ui;
+	delete m_inputhandler;
 }
 
 void Dialog::nextFrame()
@@ -40,41 +34,11 @@ void Dialog::paintEvent(QPaintEvent *)
 
 void Dialog::keyPressEvent(QKeyEvent *e)
 {
-	InputHandler inputHandler;
-    Command *command = inputHandler.handleInput(e);
+    Command *command = m_inputhandler->handleInput(e);
 	if (command)
 	{
          command->execute(m_game, this);
 	}
-    if (m_game->pauseEnabled() &&
-        !m_game->wonState() &&
-        !m_game->lostState() &&
-        e->key() == Qt::Key_Escape)
-    {
-		m_game->switchPaused();
-    }
-
-    if (e->key() == Qt::Key_Q)
-    {
-        this->close();
-    }
-
-    if (e->key() == Qt::Key_Space)
-    {
-		m_game->getStickman()->jump();
-    }
-
-    if (m_game->stage3State() && e->key() == Qt::Key_Left)
-    {
-		m_game->getStickman()->moveLeft();
-		m_game->charMoving();
-    }
-
-    if (m_game->stage3State() && e->key() == Qt::Key_Right)
-    {
-		m_game->getStickman()->moveRight();
-		m_game->charMoving();
-    }
 }
 
 void Dialog::keyReleaseEvent(QKeyEvent *e)

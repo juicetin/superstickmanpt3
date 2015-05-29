@@ -46,6 +46,14 @@ Game::Game(QDialog *dialog) :
 	Camera::getInstance().setYPosition(m_dialog->height() / 2);
 }
 
+Game::~Game()
+{
+    delete m_stickmanAdapter;
+    delete m_background;
+    delete m_level;
+    delete m_lives;
+}
+
 bool Game::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
 {
 

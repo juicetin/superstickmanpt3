@@ -26,6 +26,7 @@ class Game
 {
 	public:
 		Game(QDialog *dialog);
+        ~Game();
 		bool loadConfiguration(const ConfigReader &reader);
 		bool loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader);
         void update(QTime &time);

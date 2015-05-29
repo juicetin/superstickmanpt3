@@ -45,6 +45,8 @@ protected:
 
 private:
 	Game *m_game;
+	InputHandler *m_inputhandler;
+
     Ui::Dialog *ui;
 
     int m_timerMs;

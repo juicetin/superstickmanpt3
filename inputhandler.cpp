@@ -1,12 +1,21 @@
 #include "inputhandler.h"
 
 InputHandler::InputHandler() :
-	key_p(),
-	key_q(),
-	key_space(),
-	key_left(),
-	key_right()
+	key_p(new PauseCommand()),
+	key_q(new QuitCommand()),
+	key_space(new JumpCommand()),
+	key_left(new MoveLeftCommand()),
+	key_right(new MoveRightCommand())
 {}
+
+InputHandler::~InputHandler()
+{
+	delete key_p;
+	delete key_q;
+	delete key_space;
+	delete key_left;
+	delete key_right;
+}
 
 Command * InputHandler::handleInput(QKeyEvent *e)
 {

@@ -4,11 +4,17 @@
 #include <Qt>
 #include <QKeyEvent>
 #include "command.h"
+#include "pausecommand.h"
+#include "quitcommand.h"
+#include "jumpcommand.h"
+#include "moveleftcommand.h"
+#include "moverightcommand.h"
 
 class InputHandler
 {
 	public:
 		InputHandler();
+		~InputHandler();
         Command *handleInput(QKeyEvent *e);
 	private:
 		// Commands
