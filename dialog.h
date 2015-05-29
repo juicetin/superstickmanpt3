@@ -8,6 +8,7 @@
 #include "stickmanadapter.h"
 #include "score.h"
 #include "lives.h"
+#include "game.h"
 
 #include <QDialog>
 #include <QKeyEvent>
@@ -35,35 +36,14 @@ protected:
     void keyReleaseEvent(QKeyEvent *e);
 
 private:
+
+	Game *m_game;
+    Ui::Dialog *ui;
+
     // Reads from a configuration file and initialises the game.
     // Returns false if there are settings missing, in which case default values are used.
-    bool loadConfiguration(const ConfigReader &reader);
-    bool loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader);
 
-    Ui::Dialog *ui;
     int m_timerMs;
-    Stickman *m_stickman;
-    StickmanAdapter *m_stickmanAdapter;
-    Background *m_background;
-
-    bool m_paused;
-    bool m_lost;
-    bool m_won;
-    bool m_pauseScreenEnabled;
-    bool m_stageThreeEnabled;
-    bool m_moving;
-
-    QImage m_pauseImage;
-    QImage m_lostImage;
-    QImage m_wonImage;
-
-    Level* m_level;
-    std::vector<std::string> m_levelConfigs;
-    std::vector<std::string>::const_iterator m_levelConfigIterator;
-
-    Score m_score;
-    Lives *m_lives;
-
     QTime m_time;
 };
 

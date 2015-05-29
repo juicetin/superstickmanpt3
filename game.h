@@ -1,42 +1,45 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "stickmanadapter.h"
 #include "background.h"
+#include "camera.h"
+#include "configreader.h"
 #include "level.h"
-#include "lives.h"
+#include "stickman.h"
+#include "stickmanadapter.h"
 #include "score.h"
+#include "lives.h"
+#include "stickmanfactory.h"
 
 #include <QImage>
+#include <QMessageBox>
+#include <QTime>
+#include <QTimer>
+#include <QDir>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <QDialog>
+#include <QPainter>
 
 class Game
 {
-public:
-    Game();
-	class Builder;
-};
-
-class Game::Builder
-{
 	public:
-		Builder& setStickmanAdapater() 
-		{
-			
-		}
-		Builder& setBackground() {}
-		Builder& setLevel() {}
-		Builder& setLives() {}
-		Builder& setScore() {}
-		Builder& setPauseImage() {}
-		Builder& setLostImage() {}
-		Builder& setWinImage() {}
-	private:
+        friend class Dialog;
+		Game(QDialog *dialog);
+		bool loadConfiguration(const ConfigReader &reader);
+		bool loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader);
+        void update(QTime &time);
+		void render(QPainter &painter);
 
-		QImage m_pauseImage;
-		QImage m_lostImage;
-		QImage m_wonImage;
+    private:
+        int m_timerMs;
+
+		QDialog *m_dialog;
+
+		Stickman *m_stickman;
+		StickmanAdapter *m_stickmanAdapter;
+		Background *m_background;
 
 		bool m_paused;
 		bool m_lost;
@@ -45,16 +48,19 @@ class Game::Builder
 		bool m_stageThreeEnabled;
 		bool m_moving;
 
-		Stickman *m_stickman;
-		StickmanAdapter *m_stickmanAdapter;
-		Background *m_background;
-		Level *m_level;
-		Lives *m_lives;
-		Score m_score;
+		QImage m_pauseImage;
+		QImage m_lostImage;
+		QImage m_wonImage;
 
+		Level* m_level;
 		std::vector<std::string> m_levelConfigs;
 		std::vector<std::string>::const_iterator m_levelConfigIterator;
 
+		Score m_score;
+		Lives *m_lives;
+
+		int m_screenWidth;
+		int m_screenHeight;
 };
 
 #endif // GAME_H
