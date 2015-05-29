@@ -30,7 +30,7 @@ DONE* score must be displayed, showing how well the player is doing (this could
 CREDIT (65%)
 DONE* user control over the stickman - left and right keys will control
 		character, which will then in turn move background/obstacles
-	* there must be levels (at least 2) and therefore must be checkpoints that
+DONE* there must be levels (at least 2) and therefore must be checkpoints that
 		you can reach in each level to move you onto the next
 	* a memory efficient design
 		---Loading levels only as previous ones are completed (only thing that is
@@ -54,7 +54,7 @@ DISTINCTION (75%)
 HIGH DISTINCTION (85%)
 	* further power-ups
 	* infinite levels
-		===LOOP THROUGH LEVELS PROVIDED IN CONFIG FOR 'INFINITE' LEVELS
+		===dynamically generate new levels
 	* a scoreboard that persists between games
 		===WRITING TO FILE - RAII ON GAME DESTRUCTION MAYBE 
 	* more things with exclamation marks!
