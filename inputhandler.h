@@ -12,11 +12,11 @@ class InputHandler
         Command *handleInput(QKeyEvent *e);
 	private:
 		// Commands
-        Command *m_pause;
-		Command *m_quit;
-		Command *m_jump;
-		Command *m_moveLeft;
-		Command *m_moveRight;
+        Command *key_p;
+		Command *key_q;
+		Command *key_space;
+		Command *key_left;
+		Command *key_right;
 };
 
 #endif // INPUTHANDLER_H

@@ -41,10 +41,10 @@ void Dialog::paintEvent(QPaintEvent *)
 void Dialog::keyPressEvent(QKeyEvent *e)
 {
 	InputHandler inputHandler;
-	Command *command = inputHandler.handleInput(*e);
+    Command *command = inputHandler.handleInput(e);
 	if (command)
 	{
-		// command->execute(actor);
+         command->execute(m_game, this);
 	}
     if (m_game->pauseEnabled() &&
         !m_game->wonState() &&
