@@ -1,3 +1,8 @@
+Changes/notes to mention
+	- fixed memory leaks
+	- refactored gargantuan Dialog class - moved everything into a Game object with a GameBuilder
+	- load levels on the fly, only as current stage is finished
+
 * Adding user control for rate at which the character moves
 * Ability to lose - crashing into obstacles will result in loss of life
 * Ability to win - obstacles should no longer repeat 

@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     stickman.cpp \
     subject.cpp \
     score.cpp \
-    lives.cpp
+    lives.cpp \
+    game.cpp
 
 HEADERS  += dialog.h \
     configreader.h \
@@ -48,7 +49,8 @@ HEADERS  += dialog.h \
     observer.h \
     subject.h \
     score.h \
-    lives.h
+    lives.h \
+    game.h
 
 FORMS    += dialog.ui
 

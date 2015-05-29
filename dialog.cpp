@@ -316,6 +316,7 @@ m_won(false)
     {
         m_levelConfigIterator = m_levelConfigs.begin();
         ConfigReader level_reader(*m_levelConfigIterator);
+        delete m_level;
         Level::Builder levelBuilder;
         loadLevel(levelBuilder, level_reader);
         m_level = levelBuilder.getResult();
@@ -365,6 +366,7 @@ void Dialog::nextFrame()
             }
             else
             {
+                delete m_level;
                 ConfigReader level_reader(*m_levelConfigIterator);
                 Level::Builder levelBuilder;
                 loadLevel(levelBuilder, level_reader);

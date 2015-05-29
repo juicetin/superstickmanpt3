@@ -104,8 +104,7 @@ Level::Builder::Builder() :
 
 Level::Builder::~Builder()
 {
-    //TODO - FIX MEMORY LEAK HERE, NEED TO DELETE M_LEVEL
-//    delete m_level;
+
 }
 
 void Level::Builder::buildObstacle(QSize size, QPoint point, const QPixmap &texture)
