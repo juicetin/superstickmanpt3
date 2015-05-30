@@ -1,6 +1,6 @@
 #include "jumpcommand.h"
 
-void JumpCommand::execute (Game *game, QDialog *dialog)
+void JumpCommand::execute (int keyType, Game *game, QDialog *dialog)
 {
     game->getStickman()->jump();
 }

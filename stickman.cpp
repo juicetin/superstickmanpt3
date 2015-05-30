@@ -16,6 +16,11 @@ Stickman::~Stickman()
 {
 }
 
+const char * Stickman::getSizeText(int enumVal)
+{
+    return enumStrings[enumVal];
+}
+
 void Stickman::render(QPainter &painter) const
 {
     // Draw the stickman at the bottom of the screen

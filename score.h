@@ -12,7 +12,7 @@ class Score : public Observer
 {
 public:
     Score();
-    void onNotify();
+    void onNotify(int change);
     void render(QPainter &qpainter);
     void update();
 

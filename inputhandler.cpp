@@ -25,6 +25,6 @@ Command * InputHandler::handleInput(QKeyEvent *e)
     if (e->key() == Qt::Key_Left)	return key_left;
     if (e->key() == Qt::Key_Right)  return key_right;
 
-	//	Nothing is pressed
+    //	Nothing/non-handled is/are pressed
 	return NULL;
 }

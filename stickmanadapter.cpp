@@ -109,7 +109,7 @@ bool StickmanAdapter::resolveCollisions(Level *level, bool stage_three) {
         // Resets from collision only occur when hitting the right/left sides
         if (wanted_collision && stage_three)
         {
-            notify();
+            notify(COLLISION);
             resetPosition();
             break;
         }
@@ -170,11 +170,6 @@ void StickmanAdapter::setJumpForce(int value) {
     m_jumpForce = value;
 }
 
-//void StickmanAdapter::setXVelocity(float value)
-//{
-//    m_stickman->setXVelocity(value);
-//}
-
 void StickmanAdapter::moveRight()
 {
 	m_stickman->setXVelocity(170);
@@ -196,4 +191,8 @@ void StickmanAdapter::resetPosition()
     setYPosition(0);
 }
 
+float StickmanAdapter::getJumpForce()
+{
+    return m_jumpForce;
+}
 

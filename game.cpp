@@ -52,6 +52,7 @@ Game::~Game()
     delete m_background;
     delete m_level;
     delete m_lives;
+    delete m_charstats;
 }
 
 bool Game::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
@@ -289,11 +290,15 @@ bool Game::loadConfiguration(const ConfigReader &reader)
 		lives = 1;
 		successful = false;
 	}
-	m_lives = new Lives(lives);
+    m_lives = new Lives(lives);
 
 	m_stickmanAdapter = new StickmanAdapter(m_stickman);
-	m_stickmanAdapter->addObserver(&m_score);
-	m_stickmanAdapter->addObserver(m_lives);
+
+    m_charstats = new CharStats(m_stickman, m_stickmanAdapter);
+
+    m_stickmanAdapter->addObserver(&m_score);
+    m_stickmanAdapter->addObserver(m_lives);
+    m_stickmanAdapter->addObserver(m_charstats);
 
 	int stickmanMaxJumps = QString(reader.get("Stickman", "MaxJumps").c_str()).toInt(&parseOk);
 	if (!parseOk || stickmanMaxJumps <= 0) {
@@ -370,12 +375,13 @@ void Game::render(QPainter &painter)
 	m_background->render(painter);
 	m_stickmanAdapter->render(painter);
 	m_level->render(painter);
+    m_charstats->render(painter);
 
 	if (m_stageThreeEnabled)
 	{
 		m_score.render(painter);
-		m_lives->render(painter);
-		if (m_lost = m_lives->update())
+        m_lives->render(painter);
+        if (m_lost = m_lives->update())
 		{
 			m_paused = true;
 		}

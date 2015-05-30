@@ -12,6 +12,8 @@ enum StickmanSize
     STICKMAN_GIANT
 };
 
+static const char * enumStrings[] = {"tiny", "normal", "large", "giant"};
+
 class Stickman
 {
 public:
@@ -21,6 +23,8 @@ public:
     // sprites is a list of animation frames
     Stickman(StickmanSize size, const std::vector<QPixmap> &sprites);
     virtual ~Stickman();
+
+    const char * getSizeText(int enumVal);
 
     virtual void render(QPainter &painter) const;
     virtual void update(int ms);

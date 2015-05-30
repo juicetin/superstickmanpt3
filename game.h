@@ -10,6 +10,7 @@
 #include "score.h"
 #include "lives.h"
 #include "stickmanfactory.h"
+#include "charstats.h"
 
 #include <QImage>
 #include <QMessageBox>
@@ -29,15 +30,18 @@ class Game
         ~Game();
 		bool loadConfiguration(const ConfigReader &reader);
 		bool loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader);
+
         void update(QTime &time);
 		void render(QPainter &painter);
 
-		StickmanAdapter *getStickman();
+        StickmanAdapter *getStickman();
+
 		bool pausedState();
 		bool pauseEnabled();
 		bool wonState();
 		bool lostState();
-		bool stage3State();
+        bool stage3State();
+
 		void charMoving();
 		void charNotMoving();
 		void switchPaused();
@@ -67,7 +71,8 @@ class Game
 		std::vector<std::string>::const_iterator m_levelConfigIterator;
 
 		Score m_score;
-		Lives *m_lives;
+        Lives *m_lives;
+        CharStats *m_charstats;
 
 		int m_screenWidth;
 		int m_screenHeight;

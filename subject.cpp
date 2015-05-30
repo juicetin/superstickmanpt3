@@ -2,13 +2,13 @@
 #include <iostream>
 using namespace std;
 
-void Subject::notify()
+void Subject::notify(int change)
 {
     for (Observer* i : m_observers)
     {
         if (i)
         {
-            i->onNotify();
+            i->onNotify(change);
         }
     }
 }

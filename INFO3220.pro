@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     quitcommand.cpp \
     jumpcommand.cpp \
     moveleftcommand.cpp \
-    moverightcommand.cpp
+    moverightcommand.cpp \
+    charstats.cpp
 
 HEADERS  += dialog.h \
     configreader.h \
@@ -63,7 +64,8 @@ HEADERS  += dialog.h \
     quitcommand.h \
     jumpcommand.h \
     moveleftcommand.h \
-    moverightcommand.h
+    moverightcommand.h \
+    charstats.h
 
 FORMS    += dialog.ui
 

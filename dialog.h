@@ -1,6 +1,9 @@
 #ifndef DIALOG_H
 #define DIALOG_H
 
+#define KEYPRESS 0
+#define KEYRELEASE 1
+
 #include "background.h"
 #include "configreader.h"
 #include "level.h"

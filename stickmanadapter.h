@@ -39,6 +39,8 @@ public:
 	void moveLeft();
 	void stop();
 
+    float getJumpForce();
+
 private:
     // hide the original stickman update, we need to know about Level
     void update(int ms) { (void)ms; }

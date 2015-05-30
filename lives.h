@@ -13,7 +13,7 @@ class Lives : public Observer
 {
 public:
     Lives(int lives);
-	void onNotify();
+    void onNotify(int change);
     void render(QPainter &qpainter);
     bool update();
 

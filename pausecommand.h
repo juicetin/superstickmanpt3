@@ -6,7 +6,7 @@
 class PauseCommand : public Command
 {
 public:
-    virtual void execute (Game *game, QDialog *dialog);
+    virtual void execute (int keyType, Game *game, QDialog *dialog);
 };
 
 #endif // PAUSECOMMAND_H

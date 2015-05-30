@@ -1,6 +1,6 @@
 #include "quitcommand.h"
 
-void QuitCommand::execute (Game *game, QDialog *dialog)
+void QuitCommand::execute (int keyType, Game *game, QDialog *dialog)
 {
     dialog->close();
 }

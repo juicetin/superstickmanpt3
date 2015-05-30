@@ -13,7 +13,7 @@ public:
     void removeObserver(Observer *observer);
 
 protected:
-    void notify();
+    void notify(int change);
 
 private:
 //    Observer *m_observers[MAX_OBSERVERS];
