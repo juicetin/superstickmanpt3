@@ -13,12 +13,12 @@
 class CharStats : public Observer
 {
 public:
-    CharStats(Stickman *stickman, StickmanAdapter *stickmanAdapter);
+    CharStats(StickmanAdapter *stickmanAdapter);
+    ~CharStats();
     void render(QPainter &qpainter);
     void onNotify(int change);
 
 private:
-    Stickman *m_stickman;
     StickmanAdapter *m_stickmanAdapter;
     StickmanSize m_curSize;
     float m_curJumpForce;

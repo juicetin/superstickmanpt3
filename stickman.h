@@ -3,6 +3,7 @@
 
 #include <QPainter>
 #include <QPixmap>
+#include <string>
 
 enum StickmanSize
 {
@@ -11,8 +12,6 @@ enum StickmanSize
     STICKMAN_LARGE,
     STICKMAN_GIANT
 };
-
-static const char * enumStrings[] = {"tiny", "normal", "large", "giant"};
 
 class Stickman
 {
@@ -24,7 +23,7 @@ public:
     Stickman(StickmanSize size, const std::vector<QPixmap> &sprites);
     virtual ~Stickman();
 
-    const char * getSizeText(int enumVal);
+    const std::string getSizeText(int enumVal);
 
     virtual void render(QPainter &painter) const;
     virtual void update(int ms);
@@ -38,6 +37,7 @@ public:
 
     // X velocity of the stickman in the game world
     float getXVelocity() const;
+    float getXMoveVelocity() const;
     void setXVelocity(float value);
 
     StickmanSize getSize() const;
@@ -50,6 +50,8 @@ public:
     int getSpriteDuration() const;
     void setSpriteDuration(int ms);
 
+    std::vector<QPixmap> getSprites() const;
+
 protected:
     const QPixmap &getSprite() const;
 
@@ -58,6 +60,9 @@ private:
     int m_xOffset;
     float m_xPosition;
     float m_xVelocity;
+    float m_xMoveVelocity;
+
+    const std::string m_enumStrings[4];
 
     std::vector<QPixmap> m_sprites; // List of sprites for each frame
     std::vector<QPixmap>::size_type m_curSpriteIdx; // Index of the current frame of the sprite

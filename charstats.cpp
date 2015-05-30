@@ -1,10 +1,17 @@
 #include "charstats.h"
 
-CharStats::CharStats(Stickman *stickman, StickmanAdapter *stickmanAdapter) :
-    m_stickman(stickman),
+#include <iostream>
+using namespace std;
+
+CharStats::CharStats(StickmanAdapter *stickmanAdapter) :
     m_stickmanAdapter(stickmanAdapter),
-    m_curSize(m_stickman->getSize()),
+    m_curSize(m_stickmanAdapter->getStickman()->getSize()),
     m_curJumpForce(m_stickmanAdapter->getJumpForce())
+{
+
+}
+
+CharStats::~CharStats()
 {
 
 }
@@ -12,8 +19,8 @@ CharStats::CharStats(Stickman *stickman, StickmanAdapter *stickmanAdapter) :
 void CharStats::render(QPainter &painter)
 {
     std::string size_text ("Your current size is: [");
-    const char * s_size = m_stickman->getSizeText(m_curSize);
-    size_text.append(s_size).append("]");
+    std::string s_size = m_stickmanAdapter->getStickman()->getSizeText(m_curSize);
+    size_text.append(s_size.c_str()).append("]");
 
     QStaticText q_size(size_text.c_str());
     painter.setFont(QFont("Helvetica", 10));
@@ -32,7 +39,7 @@ void CharStats::onNotify(int change)
 {
     if (change == POWERUP)
     {
-        m_curSize = m_stickman->getSize();
+        m_curSize = m_stickmanAdapter->getStickman()->getSize();
         m_curJumpForce = m_stickmanAdapter->getJumpForce();
     }
 }

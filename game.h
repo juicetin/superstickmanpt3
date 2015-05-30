@@ -46,6 +46,9 @@ class Game
 		void charNotMoving();
 		void switchPaused();
 
+        void readObjectPath(std::string &objectSprite, const ConfigReader reader, const std::string name, bool &successful);
+        void readObjectWidth(int &objectWidth, const ConfigReader reader, bool &parseOk, const std::string name, bool &successful);
+        void readObjectHeight(int &objectHeight, const ConfigReader reader, bool &parseOk, const std::string name, bool &successful);
     private:
         int m_timerMs;
 
@@ -76,6 +79,8 @@ class Game
 
 		int m_screenWidth;
 		int m_screenHeight;
+
+		std::vector<QPixmap> m_sprites;
 };
 
 #endif // GAME_H

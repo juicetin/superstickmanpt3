@@ -9,5 +9,6 @@
         <file>resources/block_goal.png</file>
         <file>resources/won.png</file>
         <file>resources/lost.png</file>
+        <file>resources/block_powerup.png</file>
     </qresource>
 </RCC>

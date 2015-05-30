@@ -6,8 +6,11 @@
 #include "stickman.h"
 #include "subject.h"
 #include "camera.h"
+#include "stickmanfactory.h"
 
 #include <QPainter>
+#include <QPixmap>
+#include <vector>
 
 // Adapt the Stickman class for Sprite
 // Sprite adds the benefits of
@@ -41,16 +44,23 @@ public:
 
     float getJumpForce();
 
+    Stickman *getStickman();
+
+    void growStickman();
+    void shrinkStickman();
+
 private:
     // hide the original stickman update, we need to know about Level
     void update(int ms) { (void)ms; }
 
     // resolves any collisions Stickman has with the level
     bool resolveCollisions(Level* level, bool stage_three);
+    void collectPowerups(Level* level, bool stage_three);
 
 private:
 
     Stickman* m_stickman;
+    Stickman* m_stickmen[4];
 
     // the up and down velocity, + is up-on-screen
     float m_yVelocity;

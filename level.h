@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <list>
 
 // A container for all level objects.
 // An associated builder - Level::Builder is used to create a level.
@@ -41,6 +42,7 @@ public:
 
     // finds any internal object colliding with sprite and returns it, or nullptr
     const Sprite* findCollidingObjects(const Sprite* sprite) const;
+    bool findCollectedPowerups(Sprite* sprite);
 
     // returns the smallest rectangle that surrounds all level objects
     QRect rect() const;
@@ -51,6 +53,7 @@ public:
 private:
     // all objects in the level
     std::vector<Sprite*> m_objects;
+    std::list<Sprite*> m_powerups;
 };
 
 // Builds a level bit by bit. An implementation of the builder pattern.
@@ -68,6 +71,7 @@ public:
 
     // Creates an obstacle and adds it to the level
     void buildObstacle(QSize size, QPoint point, const QPixmap& texture);
+    void buildPowerup(QSize size, QPoint point, const QPixmap& texture);
 
     // Gets the internal level that was being built
     Level* getResult();

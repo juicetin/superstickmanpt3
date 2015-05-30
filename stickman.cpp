@@ -8,17 +8,19 @@ Stickman::Stickman(StickmanSize size, const std::vector<QPixmap> &sprites) :
     m_sprites(sprites),
     m_curSpriteIdx(0),
     m_spriteDurationMs(1000),
-    m_curSpriteDurationMs(0)
+    m_curSpriteDurationMs(0),
+    m_enumStrings({"tiny", "normal", "large", "giant"})
 {
+    // m_enumStrings = {"tiny", "normal", "large", "giant"};
 }
 
 Stickman::~Stickman()
 {
 }
 
-const char * Stickman::getSizeText(int enumVal)
+const std::string Stickman::getSizeText(int enumVal)
 {
-    return enumStrings[enumVal];
+    return m_enumStrings[enumVal];
 }
 
 void Stickman::render(QPainter &painter) const
@@ -67,9 +69,15 @@ float Stickman::getXVelocity() const
     return m_xVelocity;
 }
 
+float Stickman::getXMoveVelocity() const
+{
+    return m_xMoveVelocity;
+}
+
 void Stickman::setXVelocity(float value)
 {
     m_xVelocity = value;
+    m_xMoveVelocity = value;
 }
 
 StickmanSize Stickman::getSize() const
@@ -90,4 +98,9 @@ void Stickman::setSpriteDuration(int ms)
 const QPixmap &Stickman::getSprite() const
 {
     return m_sprites[m_curSpriteIdx];
+}
+
+std::vector<QPixmap> Stickman::getSprites() const
+{
+    return m_sprites;
 }

@@ -1,9 +1,7 @@
 #include "level.h"
-
 #include "obstacle.h"
 
 #include <limits>
-
 #include <iostream>
 using namespace std;
 
@@ -31,10 +29,19 @@ void Level::update(int ms)
 
 void Level::render(QPainter& painter) const
 {
-    std::vector<Sprite*>::const_iterator it;
+    {
+        std::vector<Sprite*>::const_iterator it;
 
-    for (it = m_objects.begin(); it != m_objects.end(); it++) {
-        (*it)->render(painter);
+        for (it = m_objects.begin(); it != m_objects.end(); it++) {
+            (*it)->render(painter);
+        }
+    }
+    {
+        std::list<Sprite*>::const_iterator it;
+
+        for (it = m_powerups.begin(); it != m_powerups.end(); it++) {
+            (*it)->render(painter);
+        }
     }
 }
 
@@ -49,6 +56,20 @@ const Sprite* Level::findCollidingObjects(const Sprite* sprite) const
     }
 
     return 0;
+}
+
+bool Level::findCollectedPowerups(Sprite* sprite)
+{
+    std::list<Sprite*>::iterator it;
+
+    for (it = m_powerups.begin(); it != m_powerups.end(); it++) {
+        if ((*it)->collidesWith(*sprite)) {
+            m_powerups.erase(it);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 QRect Level::rect() const {
@@ -110,6 +131,17 @@ Level::Builder::~Builder()
 void Level::Builder::buildObstacle(QSize size, QPoint point, const QPixmap &texture)
 {
     m_level->m_objects.push_back(
+                new Obstacle(
+                    size,
+                    point,
+                    texture
+                    )
+                );
+}
+
+void Level::Builder::buildPowerup(QSize size, QPoint point, const QPixmap& texture)
+{
+    m_level->m_powerups.push_back(
                 new Obstacle(
                     size,
                     point,

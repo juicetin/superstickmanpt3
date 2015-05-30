@@ -65,7 +65,8 @@ HEADERS  += dialog.h \
     jumpcommand.h \
     moveleftcommand.h \
     moverightcommand.h \
-    charstats.h
+    charstats.h \
+    stickmanstate.h
 
 FORMS    += dialog.ui
 

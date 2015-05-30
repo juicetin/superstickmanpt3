@@ -43,6 +43,9 @@ DONE* there must be levels (at least 2) and therefore must be checkpoints that
 			in the sense that a theoretically near-infinite number of levels can
 			be stored as there won't be X level objects all generated and stored 
 			at the very beginning
+		---QtCreator valgrind - no memory leaks
+		---Uses a list for storing powerups - constant erases, vector requires
+			a lot of memory shifting
 
 DISTINCTION (75%)
 	* include power-ups: the power-ups should alternate the stickman between

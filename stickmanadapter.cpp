@@ -8,7 +8,6 @@
 using namespace std;
 
 StickmanAdapter::StickmanAdapter(Stickman* stickman) :
-m_stickman(stickman),
 m_yVelocity(0),
 m_jumpForce(400.0f),
 m_gravity(1500.0f),
@@ -16,6 +15,19 @@ m_currJumpCount(0),
 m_maxJumpCount(2),
 Sprite(stickman->getSprite())
 {
+    for (int i = 0; i < 4; ++i)
+    {
+        m_stickmen[i] = StickmanFactory::create(stickman->getSizeText(i), stickman->getSprites());
+        if (m_stickmen[i])
+        {
+            m_stickmen[i]->setXOffset(stickman->getXOffset());
+            m_stickmen[i]->setXVelocity(stickman->getXVelocity());
+            m_stickmen[i]->setSpriteDuration(stickman->getSpriteDuration());
+        }
+    }
+
+    m_stickman = m_stickmen[stickman->getSize()];
+
     Sprite::setXPosition(0.0f);
     // set the exact dimensions of the sprite according to stickman
     Sprite::setHeight(m_stickman->getHeight(), IgnoreAspectRatio);
@@ -24,7 +36,11 @@ Sprite(stickman->getSprite())
 
 StickmanAdapter::~StickmanAdapter()
 {
-    delete m_stickman;
+    // delete m_stickman;
+    for (int i = 0; i < 1; ++i) 
+    {
+        if (m_stickmen[i]) delete m_stickmen[i];
+    }
 }
 
 void StickmanAdapter::render(QPainter &painter) const
@@ -52,7 +68,7 @@ bool StickmanAdapter::resolveCollisions(Level *level, bool stage_three) {
     // appropriate way to move out of the collision
     while ((sprite = level->findCollidingObjects(dynamic_cast<Sprite*>(this))) != 0) {
 
-        if (level->checkGoalReached(sprite))
+        if (level->checkGoalReached(sprite) && stage_three)
         {
             return true;
         }
@@ -109,12 +125,23 @@ bool StickmanAdapter::resolveCollisions(Level *level, bool stage_three) {
         // Resets from collision only occur when hitting the right/left sides
         if (wanted_collision && stage_three)
         {
-            notify(COLLISION);
             resetPosition();
+            shrinkStickman();
+            notify(COLLISION);
             break;
         }
     }
     return false;
+}
+
+void StickmanAdapter::collectPowerups(Level* level, bool stage_three)
+{
+
+    if (level->findCollectedPowerups(dynamic_cast<Sprite*>(this))) {
+        /* Enact powerup */
+        growStickman();
+        notify(POWERUP);
+    }
 }
 
 bool StickmanAdapter::update(int ms, Level* level, bool stage_three)
@@ -134,6 +161,7 @@ bool StickmanAdapter::update(int ms, Level* level, bool stage_three)
 
 
     bool check_goal = resolveCollisions(level, stage_three);
+    collectPowerups(level, stage_three);
 
 
     // change the sprite to the current sprite (the stickman is animated)
@@ -172,17 +200,17 @@ void StickmanAdapter::setJumpForce(int value) {
 
 void StickmanAdapter::moveRight()
 {
-	m_stickman->setXVelocity(170);
+   m_stickman->setXVelocity(170);
 }
 
 void StickmanAdapter::moveLeft()
 {
-	m_stickman->setXVelocity(-170);
+   m_stickman->setXVelocity(-170);
 }
 
 void StickmanAdapter::stop()
 {
-	m_stickman->setXVelocity(0);
+   m_stickman->setXVelocity(0);
 }
 
 void StickmanAdapter::resetPosition()
@@ -196,3 +224,34 @@ float StickmanAdapter::getJumpForce()
     return m_jumpForce;
 }
 
+Stickman * StickmanAdapter::getStickman()
+{
+    return m_stickman;
+}
+
+void StickmanAdapter::growStickman()
+{
+    if (m_stickman->getSize() < 3)
+    {
+        m_stickman = m_stickmen[m_stickman->getSize()+1];
+
+        // set the exact dimensions of the sprite according to stickman
+        Sprite::setHeight(m_stickman->getHeight(), IgnoreAspectRatio);
+        Sprite::setWidth(m_stickman->getWidth(), IgnoreAspectRatio);
+        return;
+    }
+
+    /* Get more lives if upgrades are collected at max size */
+}
+
+void StickmanAdapter::shrinkStickman()
+{
+    if (m_stickman->getSize() > 0)
+    {
+        m_stickman = m_stickmen[m_stickman->getSize()-1];
+
+        // set the exact dimensions of the sprite according to stickman
+        Sprite::setHeight(m_stickman->getHeight(), IgnoreAspectRatio);
+        Sprite::setWidth(m_stickman->getWidth(), IgnoreAspectRatio);
+    }
+}
