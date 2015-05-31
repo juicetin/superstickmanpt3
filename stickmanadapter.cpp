@@ -139,132 +139,138 @@ bool StickmanAdapter::resolveCollisions(Level *level, bool stage_three) {
 
 void StickmanAdapter::collectPowerups(Level* level, bool stage_three)
 {
+	int powerUpType = level->findCollectedPowerups(dynamic_cast<Sprite*>(this));
+    if (powerUpType == 0) {
+		growStickman();
+	}
+	else if (powerUpType == 1) {
+		shrinkStickman();
+	}
+	if (powerUpType > -1)
+	{
+		QSound::play(":/resources/powerup.wav");
+		notify(POWERUP);
+	}
 
-    if (level->findCollectedPowerups(dynamic_cast<Sprite*>(this))) {
-        /* Enact powerup */
-        QSound::play(":/resources/powerup.wav");
-        growStickman();
-        notify(POWERUP);
-    }
 }
 
 bool StickmanAdapter::update(int ms, Level* level, bool stage_three)
 {
-    m_stickman->update(ms);
+	m_stickman->update(ms);
 
-    // update the positions with the velocities
-    if (getXPosition() < 0)
-    {
-        setXPosition(0);
-    }
-    else
-    {
-        setXPosition(getXPosition() + m_stickman->getXVelocity() * (ms / 1000.0));
-    }
-    setYPosition(getYPosition() + m_yVelocity * (ms / 1000.0));
-
-
-    bool check_goal = resolveCollisions(level, stage_three);
-
-    collectPowerups(level, stage_three);
+	// update the positions with the velocities
+	if (getXPosition() < 0)
+	{
+		setXPosition(0);
+	}
+	else
+	{
+		setXPosition(getXPosition() + m_stickman->getXVelocity() * (ms / 1000.0));
+	}
+	setYPosition(getYPosition() + m_yVelocity * (ms / 1000.0));
 
 
-    // change the sprite to the current sprite (the stickman is animated)
-    changeTexture(m_stickman->getSprite());
+	bool check_goal = resolveCollisions(level, stage_three);
 
-    // cause the y position to fall if we are not on the ground
-    if (getYPosition() > 0 + (m_stickman->getHeight() / 2)) {
-        m_yVelocity -= m_gravity * (ms / 1000.0);
-    } else {
-        m_yVelocity = 0;
-        m_currJumpCount = 0;
-        setYPosition(0 + (m_stickman->getHeight() / 2));
-    }
+	collectPowerups(level, stage_three);
+
+
+	// change the sprite to the current sprite (the stickman is animated)
+	changeTexture(m_stickman->getSprite());
+
+	// cause the y position to fall if we are not on the ground
+	if (getYPosition() > 0 + (m_stickman->getHeight() / 2)) {
+		m_yVelocity -= m_gravity * (ms / 1000.0);
+	} else {
+		m_yVelocity = 0;
+		m_currJumpCount = 0;
+		setYPosition(0 + (m_stickman->getHeight() / 2));
+	}
 
 	if (check_goal) notify(REACHEDGOAL);
-    return check_goal;
+	return check_goal;
 }
 
 bool StickmanAdapter::jump() {
-    if (m_currJumpCount < m_maxJumpCount) {
-        m_yVelocity = m_jumpForce;
-        m_currJumpCount++;
-        return true;
-    }
-    return false;
+	if (m_currJumpCount < m_maxJumpCount) {
+		m_yVelocity = m_jumpForce;
+		m_currJumpCount++;
+		return true;
+	}
+	return false;
 }
 
 void StickmanAdapter::setMaxJumps(int value) {
-    m_maxJumpCount = value;
+	m_maxJumpCount = value;
 }
 
 void StickmanAdapter::setGravity(int value) {
-    m_gravity = value;
+	m_gravity = value;
 }
 
 void StickmanAdapter::setJumpForce(int value) {
-    m_jumpForce = value;
+	m_jumpForce = value;
 }
 
 void StickmanAdapter::moveRight()
 {
-   m_stickman->setXVelocity(170);
+	m_stickman->setXVelocity(170);
 }
 
 void StickmanAdapter::moveLeft()
 {
-   m_stickman->setXVelocity(-170);
+	m_stickman->setXVelocity(-170);
 }
 
 void StickmanAdapter::stop()
 {
-   m_stickman->setXVelocity(0);
+	m_stickman->setXVelocity(0);
 }
 
 void StickmanAdapter::resetPosition()
 {
-    setXPosition(0);
-    setYPosition(0);
+	setXPosition(0);
+	setYPosition(0);
 }
 
 float StickmanAdapter::getJumpForce()
 {
-    return m_jumpForce;
+	return m_jumpForce;
 }
 
 Stickman * StickmanAdapter::getStickman()
 {
-    return m_stickman;
+	return m_stickman;
 }
 
 void StickmanAdapter::growStickman()
 {
-    if (m_stickman->getSize() < 3)
-    {
-        m_stickman = m_stickmen[m_stickman->getSize()+1];
-        m_stickman->setXVelocity(0);
+	if (m_stickman->getSize() < 3)
+	{
+		m_stickman = m_stickmen[m_stickman->getSize()+1];
+		m_stickman->setXVelocity(0);
 
-        // set the exact dimensions of the sprite according to stickman
-        Sprite::setHeight(m_stickman->getHeight(), IgnoreAspectRatio);
-        Sprite::setWidth(m_stickman->getWidth(), IgnoreAspectRatio);
-        setJumpForce(getJumpForce() * 1.2);
-        return;
-    }
+		// set the exact dimensions of the sprite according to stickman
+		Sprite::setHeight(m_stickman->getHeight(), IgnoreAspectRatio);
+		Sprite::setWidth(m_stickman->getWidth(), IgnoreAspectRatio);
+		setJumpForce(getJumpForce() * 1.2);
+		return;
+	}
 
-    /* Get more lives if upgrades are collected at max size */
-    notify(OVERMAXSIZE);
+	/* Get more lives if upgrades are collected at max size */
+	notify(OVERMAXSIZE);
 }
 
 void StickmanAdapter::shrinkStickman()
 {
-    if (m_stickman->getSize() > 0)
-    {
-        m_stickman = m_stickmen[m_stickman->getSize()-1];
-        m_stickman->setXVelocity(0);
+	if (m_stickman->getSize() > 0)
+	{
+		m_stickman = m_stickmen[m_stickman->getSize()-1];
+		m_stickman->setXVelocity(0);
 
-        // set the exact dimensions of the sprite according to stickman
-        Sprite::setHeight(m_stickman->getHeight(), IgnoreAspectRatio);
-        Sprite::setWidth(m_stickman->getWidth(), IgnoreAspectRatio);
-        setJumpForce(getJumpForce() / 1.195);
-    }
+		// set the exact dimensions of the sprite according to stickman
+		Sprite::setHeight(m_stickman->getHeight(), IgnoreAspectRatio);
+		Sprite::setWidth(m_stickman->getWidth(), IgnoreAspectRatio);
+		setJumpForce(getJumpForce() / 1.195);
+	}
 }

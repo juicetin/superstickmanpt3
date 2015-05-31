@@ -42,7 +42,7 @@ public:
 
     // finds any internal object colliding with sprite and returns it, or nullptr
     const Sprite* findCollidingObjects(const Sprite* sprite) const;
-    bool findCollectedPowerups(Sprite* sprite);
+    int findCollectedPowerups(Sprite* sprite);
 
     // returns the smallest rectangle that surrounds all level objects
     QRect rect() const;
@@ -71,7 +71,7 @@ public:
 
     // Creates an obstacle and adds it to the level
     void buildObstacle(QSize size, QPoint point, const QPixmap& texture);
-    void buildPowerup(QSize size, QPoint point, const QPixmap& texture);
+    void buildPowerup(QSize size, QPoint point, const QPixmap& texture, int type);
 
     // Gets the internal level that was being built
     Level* getResult();

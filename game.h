@@ -12,6 +12,7 @@
 #include "stickmanfactory.h"
 #include "charstats.h"
 #include "observer.h"
+#include "obstacle.h"
 
 #include <QImage>
 #include <QMessageBox>

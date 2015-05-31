@@ -58,18 +58,18 @@ const Sprite* Level::findCollidingObjects(const Sprite* sprite) const
     return 0;
 }
 
-bool Level::findCollectedPowerups(Sprite* sprite)
+int Level::findCollectedPowerups(Sprite* sprite)
 {
     std::list<Sprite*>::iterator it;
 
     for (it = m_powerups.begin(); it != m_powerups.end(); it++) {
         if ((*it)->collidesWith(*sprite)) {
             m_powerups.erase(it);
-            return true;
+            return static_cast<Obstacle*>((*it))->getType();
         }
     }
 
-    return false;
+    return -1;
 }
 
 QRect Level::rect() const {
@@ -139,13 +139,14 @@ void Level::Builder::buildObstacle(QSize size, QPoint point, const QPixmap &text
                 );
 }
 
-void Level::Builder::buildPowerup(QSize size, QPoint point, const QPixmap& texture)
+void Level::Builder::buildPowerup(QSize size, QPoint point, const QPixmap& texture, int type)
 {
     m_level->m_powerups.push_back(
                 new Obstacle(
                     size,
                     point,
-                    texture
+                    texture,
+                    type
                     )
                 );
 }

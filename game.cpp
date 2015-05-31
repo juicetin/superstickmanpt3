@@ -194,10 +194,12 @@ bool Game::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
 
         if (!powerup_pair.empty())
         {
+            int type = GROW;
             std::istringstream ss(powerup_pair.c_str());
             ss >> name;
             ss >> gap;
             ss >> height;
+            ss >> type;
 
             /* Sprite image path*/
             std::string powerUpSprite;
@@ -217,7 +219,7 @@ bool Game::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
             levelBuilder.buildPowerup(
                         QSize(powerUpWidth * powup_unitsInPixels, powerUpHeight * powup_unitsInPixels),
                         QPoint(powerUpPosition, (powerUpHeight * powup_unitsInPixels / 2.0f) + height * powup_unitsInPixels),
-                        QPixmap(powerUpSprite.c_str())
+                        QPixmap(powerUpSprite.c_str()), type
                         );
 
             powerUpPosition += gap * powup_unitsInPixels;

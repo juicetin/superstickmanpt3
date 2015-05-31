@@ -79,7 +79,7 @@ filestocopy.path = $$OUT_PWD
 
 INSTALLS += filestocopy
 
-#CONFIG += c++11
+CONFIG += c++11
 
 #QMAKE_CXXFLAGS += -std=c++11
 #QMAKE_CXXFLAGS += /wd4996
