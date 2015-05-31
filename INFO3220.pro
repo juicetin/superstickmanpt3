@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia
 
 TARGET = INFO3220B1b
 TEMPLATE = app
@@ -79,6 +79,10 @@ filestocopy.path = $$OUT_PWD
 
 INSTALLS += filestocopy
 
-CONFIG += c++11
+#CONFIG += c++11
 
-#greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia
+#QMAKE_CXXFLAGS += -std=c++11
+#QMAKE_CXXFLAGS += /wd4996
+
+QMAKE_CFLAGS_WARN_ON -= -Wall
+QMAKE_CXXFLAGS_WARN_ON -= Wall

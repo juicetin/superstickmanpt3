@@ -62,7 +62,7 @@ private:
     float m_xVelocity;
     float m_xMoveVelocity;
 
-    const std::string m_enumStrings[4];
+    std::string m_enumStrings[4];
 
     std::vector<QPixmap> m_sprites; // List of sprites for each frame
     std::vector<QPixmap>::size_type m_curSpriteIdx; // Index of the current frame of the sprite

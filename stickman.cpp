@@ -8,10 +8,14 @@ Stickman::Stickman(StickmanSize size, const std::vector<QPixmap> &sprites) :
     m_sprites(sprites),
     m_curSpriteIdx(0),
     m_spriteDurationMs(1000),
-    m_curSpriteDurationMs(0),
-    m_enumStrings({"tiny", "normal", "large", "giant"})
+    m_curSpriteDurationMs(0)
+//    m_enumStrings({"tiny", "normal", "large", "giant"})
 {
-    // m_enumStrings = {"tiny", "normal", "large", "giant"};
+//     m_enumStrings = {"tiny", "normal", "large", "giant"};
+     m_enumStrings[0] = "tiny";
+     m_enumStrings[1] = "normal";
+     m_enumStrings[2] = "large";
+     m_enumStrings[3] = "giant";
 }
 
 Stickman::~Stickman()

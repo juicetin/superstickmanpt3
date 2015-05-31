@@ -10,5 +10,9 @@
         <file>resources/won.png</file>
         <file>resources/lost.png</file>
         <file>resources/block_powerup.png</file>
+        <file>resources/jump.wav</file>
+        <file>resources/lose.wav</file>
+        <file>resources/won.wav</file>
+        <file>resources/powerup.wav</file>
     </qresource>
 </RCC>

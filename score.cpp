@@ -30,5 +30,7 @@ void Score::update(bool left, bool right)
 
 int Score::getScore() const
 {
+    if (m_lives->getLives() == 0)
+        return m_score;
     return m_score * m_lives->getLives();
 }

@@ -4,6 +4,7 @@
 #include "stickmanadapter.h"
 
 #include <QVector2D>
+#include <QSound>
 #include <iostream>
 using namespace std;
 
@@ -141,6 +142,7 @@ void StickmanAdapter::collectPowerups(Level* level, bool stage_three)
 
     if (level->findCollectedPowerups(dynamic_cast<Sprite*>(this))) {
         /* Enact powerup */
+        QSound::play(":/resources/powerup.wav");
         growStickman();
         notify(POWERUP);
     }
@@ -183,11 +185,13 @@ bool StickmanAdapter::update(int ms, Level* level, bool stage_three)
     return check_goal;
 }
 
-void StickmanAdapter::jump() {
+bool StickmanAdapter::jump() {
     if (m_currJumpCount < m_maxJumpCount) {
         m_yVelocity = m_jumpForce;
         m_currJumpCount++;
+        return true;
     }
+    return false;
 }
 
 void StickmanAdapter::setMaxJumps(int value) {

@@ -31,7 +31,7 @@ public:
     virtual bool update(int ms, Level* level, bool stage_three);
 
     // adds a upward force to the player
-    virtual void jump();
+    virtual bool jump();
 
     void setMaxJumps(int value);
     void setGravity(int value);

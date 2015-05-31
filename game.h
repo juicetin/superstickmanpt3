@@ -68,7 +68,9 @@ class Game : public Observer
 
 		bool m_paused;
 		bool m_lost;
+        bool m_playLost;
 		bool m_won;
+        bool m_playWon;
 		bool m_pauseScreenEnabled;
         bool m_stageThreeEnabled;
 		bool m_movingLeft;

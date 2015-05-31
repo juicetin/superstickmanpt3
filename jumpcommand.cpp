@@ -1,6 +1,10 @@
 #include "jumpcommand.h"
+#include <QSound>
 
 void JumpCommand::execute (int keyType, Game *game, QDialog *dialog)
 {
-    game->getStickman()->jump();
+    if (game->getStickman()->jump())
+    {
+        QSound::play(":/resources/jump.wav");
+    }
 }

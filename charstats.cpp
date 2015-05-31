@@ -48,7 +48,7 @@ void CharStats::onNotify(int change)
 
 std::string CharStats::getSize() const
 {
-    m_stickmanAdapter->getStickman()->getSizeText(m_curSize);
+    return m_stickmanAdapter->getStickman()->getSizeText(m_curSize);
 }
 
 float CharStats::getJumpForce() const
