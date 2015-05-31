@@ -22,3 +22,9 @@ Lives Remaining: 10
 Lives Lost:      0
 Levels Complete: 1
 
+[Player: asdf]
+Final Score:     810
+Lives Remaining: 10
+Lives Lost:      0
+Levels Complete: 1
+
