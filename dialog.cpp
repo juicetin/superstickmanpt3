@@ -9,7 +9,7 @@ Dialog::Dialog(QWidget *parent) :
     m_game = new Game(this);
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(nextFrame()));
-    timer->start(20);
+    timer->start(m_game->getFrameStart());
     m_time.restart();
 }
 

@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     jumpcommand.cpp \
     moveleftcommand.cpp \
     moverightcommand.cpp \
-    charstats.cpp
+    charstats.cpp \
+    tests.cpp
 
 HEADERS  += dialog.h \
     configreader.h \
@@ -66,7 +67,8 @@ HEADERS  += dialog.h \
     moveleftcommand.h \
     moverightcommand.h \
     charstats.h \
-    stickmanstate.h
+    stickmanstate.h \
+    tests.h
 
 FORMS    += dialog.ui
 

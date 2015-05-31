@@ -14,5 +14,6 @@
         <file>resources/lose.wav</file>
         <file>resources/won.wav</file>
         <file>resources/powerup.wav</file>
+        <file>resources/block_powerdown.png</file>
     </qresource>
 </RCC>

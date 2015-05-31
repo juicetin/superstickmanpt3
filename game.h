@@ -28,73 +28,77 @@
 
 class Game : public Observer
 {
-	public:
-		Game(QDialog *dialog);
-        ~Game();
+    friend class Tests;
+public:
+    Game(QDialog *dialog);
+    ~Game();
 
-        void onNotify(int change);
+    void onNotify(int change);
 
-		bool loadConfiguration(const ConfigReader &reader);
-		bool loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader);
+    bool loadConfiguration(const ConfigReader &reader);
+    bool loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader);
 
-        void update(QTime &time);
-		void render(QPainter &painter);
+    void update(QTime &time);
+    void render(QPainter &painter);
 
-        StickmanAdapter *getStickman();
+    StickmanAdapter *getStickman();
 
-        bool pausedState() const;
-        bool pauseEnabled() const;
-        bool wonState() const;
-        bool lostState() const;
-        bool stage3State() const;
+    bool pausedState() const;
+    bool pauseEnabled() const;
+    bool wonState() const;
+    bool lostState() const;
+    bool stage3State() const;
+    bool jumpAllowed() const;
 
-        int getLevelsComplete() const;
+    int getLevelsComplete() const;
+    int getFrameStart() const;
 
-		void charMovingRight();
-		void charMovingLeft();
-		void charNotMoving();
-		void switchPaused();
+    void charMovingRight();
+    void charMovingLeft();
+    void charNotMoving();
+    void switchPaused();
 
-        void readObjectPath(std::string &objectSprite, const ConfigReader reader, const std::string name, bool &successful);
-        void readObjectWidth(int &objectWidth, const ConfigReader reader, bool &parseOk, const std::string name, bool &successful);
-        void readObjectHeight(int &objectHeight, const ConfigReader reader, bool &parseOk, const std::string name, bool &successful);
-    private:
-        int m_timerMs;
+    void readObjectPath(std::string &objectSprite, const ConfigReader reader, const std::string name, bool &successful);
+    void readObjectWidth(int &objectWidth, const ConfigReader reader, bool &parseOk, const std::string name, bool &successful);
+    void readObjectHeight(int &objectHeight, const ConfigReader reader, bool &parseOk, const std::string name, bool &successful);
+private:
+    int m_timerMs;
 
-		QDialog *m_dialog;
+    QDialog *m_dialog;
 
-		Stickman *m_stickman;
-		StickmanAdapter *m_stickmanAdapter;
-		Background *m_background;
+    Stickman *m_stickman;
+    StickmanAdapter *m_stickmanAdapter;
+    Background *m_background;
 
-		bool m_paused;
-		bool m_lost;
-        bool m_playLost;
-		bool m_won;
-        bool m_playWon;
-		bool m_pauseScreenEnabled;
-        bool m_stageThreeEnabled;
-		bool m_movingLeft;
-		bool m_movingRight;
+    bool m_paused;
+    bool m_lost;
+    bool m_won;
+    bool m_playLost;
+    bool m_playWon;
+    bool m_pauseScreenEnabled;
+    bool m_stageThreeEnabled;
+    bool m_jumpEnabled;
+    bool m_movingLeft;
+    bool m_movingRight;
 
-		QImage m_pauseImage;
-		QImage m_lostImage;
-		QImage m_wonImage;
+    QImage m_pauseImage;
+    QImage m_lostImage;
+    QImage m_wonImage;
 
-        int m_levelsCompleted;
+    int m_levelsCompleted;
 
-		Level* m_level;
-		std::vector<std::string> m_levelConfigs;
-		std::vector<std::string>::const_iterator m_levelConfigIterator;
+    Level* m_level;
+    std::vector<std::string> m_levelConfigs;
+    std::vector<std::string>::const_iterator m_levelConfigIterator;
 
-		Score *m_score;
-        Lives *m_lives;
-        CharStats *m_charstats;
+    Score *m_score;
+    Lives *m_lives;
+    CharStats *m_charstats;
 
-		int m_screenWidth;
-		int m_screenHeight;
+    int m_screenWidth;
+    int m_screenHeight;
 
-		std::vector<QPixmap> m_sprites;
+    std::vector<QPixmap> m_sprites;
 };
 
 #endif // GAME_H

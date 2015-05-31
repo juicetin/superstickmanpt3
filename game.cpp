@@ -5,6 +5,8 @@
 #include <iostream>
 #include <cstdio>
 #include <QSound>
+#include <cstdlib>
+
 using namespace std;
 
 Game::Game(QDialog *dialog) :
@@ -21,7 +23,8 @@ Game::Game(QDialog *dialog) :
     m_won(false),
     m_levelsCompleted(0),
     m_playLost(false),
-    m_playWon(false)
+    m_playWon(false),
+    m_jumpEnabled(false)
 {
     std::string configFilePath("../superstickmanpt3/game.config");
 
@@ -76,6 +79,7 @@ Game::~Game()
         }
     }
 
+    delete m_stickman;
     delete m_stickmanAdapter;
     delete m_score;
     delete m_background;
@@ -83,6 +87,7 @@ Game::~Game()
     delete m_lives;
     delete m_charstats;
 }
+
 void Game::readObjectPath(std::string &objectSprite, const ConfigReader reader, const std::string name, bool &successful)
 {
     objectSprite = reader.get(name, "Sprite");
@@ -145,6 +150,8 @@ bool Game::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
 
     float obstaclePosition = m_dialog->width(), powerUpPosition = m_dialog->width();
     int obst_previousWidth = 0, powup_previousWidth = 0;
+
+    /* When obstacles are properly defined */
     int i = rangeStart;
     while (i <= rangeEnd) {
         std::stringstream indexStream;
@@ -201,6 +208,9 @@ bool Game::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
             ss >> height;
             ss >> type;
 
+            /* Adjust type if invalid */
+            if (type < 0 || type > 1) type = 0;
+
             /* Sprite image path*/
             std::string powerUpSprite;
             readObjectPath(powerUpSprite, reader, name, successful);
@@ -226,6 +236,87 @@ bool Game::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
         }
 
         i++;
+    }
+
+    /* Randomised stages where config isn't present */
+    if (rangeEnd == 0 && m_stageThreeEnabled)
+    {
+        rangeEnd = rand() % 15 + 1;
+
+        /* Randomised Obstacles */
+        for (int i = 0; i < rangeEnd; ++i)
+        {
+            /* Sprite image path*/
+            std::string obstacleSprite = ":/resources/block_brown.png";
+
+            /* Obstacle width and height */
+            int obstacleWidth = rand() % 5 + 1;
+            int obstacleHeight = obstacleWidth;
+
+            /* Obstacle pixel dimensions */
+            obst_unitsInPixels = rand() % 32 + 16;
+
+            /* Obstalce placement height and gap */
+            int height = rand() % 10 + 1;
+            int gap = rand() % 10;
+
+            obstaclePosition += ((obst_previousWidth / 2.0f) + (obstacleWidth / 2.0f)) * obst_unitsInPixels;
+            obst_previousWidth = obstacleWidth;
+
+            levelBuilder.buildObstacle(
+                        QSize(obstacleWidth * obst_unitsInPixels, obstacleHeight * obst_unitsInPixels),
+                        QPoint(obstaclePosition, (obstacleHeight * obst_unitsInPixels / 2.0f) + height * obst_unitsInPixels),
+                        QPixmap(obstacleSprite.c_str())
+                        );
+
+            obstaclePosition += gap * obst_unitsInPixels;
+        }
+
+        /* Goal node */
+        std::string obstacleSprite = ":/resources/block_goal.png";
+        int obstacleWidth = rand() % 5 + 1;
+        int obstacleHeight = rand() % 5 + 1;
+        obst_unitsInPixels = rand() % 32 + 16;
+        int height = rand() % 3 + 1;
+        obstaclePosition += ((obst_previousWidth / 2.0f) + (obstacleWidth / 2.0f)) * obst_unitsInPixels;
+        obst_previousWidth = obstacleWidth;
+        levelBuilder.buildObstacle(
+                    QSize(obstacleWidth * obst_unitsInPixels, obstacleHeight * obst_unitsInPixels),
+                    QPoint(obstaclePosition, (obstacleHeight * obst_unitsInPixels / 2.0f) + height * obst_unitsInPixels),
+                    QPixmap(obstacleSprite.c_str())
+                    );
+
+        /* Randmoised Powerups */
+        for (int i = 0; i < rangeEnd/3; ++i)
+        {
+            /* Powerup type and image path*/
+            int type = rand() % 2;
+            std::string powerUpSprite;
+            if (type == GROW) (powerUpSprite = ":/resources/block_powerup.png");
+            else (powerUpSprite = ":/resources/block_powerdown.png");
+
+            /* Powerup width and height */
+            int powerUpWidth = rand() % 2 + 1;
+            int powerUpHeight = powerUpWidth;
+
+            /* Powerup units in pixels */
+            powup_unitsInPixels = rand() % 16 + 16;
+
+            /* Powerup placment height and gap */
+            int height = rand() % 10 + 1;
+            int gap = rand() % 20;
+
+            powerUpPosition += ((powup_previousWidth / 2.0f) + (powerUpWidth / 2.0f)) * powup_unitsInPixels;
+            powup_previousWidth = powerUpWidth;
+
+            levelBuilder.buildPowerup(
+                        QSize(powerUpWidth * powup_unitsInPixels, powerUpHeight * powup_unitsInPixels),
+                        QPoint(powerUpPosition, (powerUpHeight * powup_unitsInPixels / 2.0f) + height * powup_unitsInPixels),
+                        QPixmap(powerUpSprite.c_str()), type
+                        );
+
+            powerUpPosition += gap * powup_unitsInPixels;
+        }
     }
 
     return successful;
@@ -297,6 +388,12 @@ bool Game::loadConfiguration(const ConfigReader &reader)
     loadLevel(levelBuilder, reader);
     m_level = levelBuilder.getResult();
     /*************************************************************************************/
+
+    /* Tune ability to jump */
+    if (!m_level->existObstacles() && !m_stageThreeEnabled)
+    {
+        m_jumpEnabled = false;
+    }
 
     /*************************************************************************************/
     /*****************************    LOAD ALL LEVELS    *********************************/
@@ -553,6 +650,11 @@ bool Game::stage3State() const
     return m_stageThreeEnabled;
 }
 
+bool Game::jumpAllowed() const
+{
+    return m_jumpEnabled;
+}
+
 int Game::getLevelsComplete() const
 {
     return m_levelsCompleted;
@@ -577,4 +679,9 @@ void Game::charNotMoving()
 void Game::switchPaused()
 {
     m_paused = !m_paused;
+}
+
+int Game::getFrameStart() const
+{
+    return m_timerMs;
 }

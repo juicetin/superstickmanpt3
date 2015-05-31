@@ -16,6 +16,11 @@ Level::~Level()
     {
         delete *it;
     }
+
+    for (auto it = m_powerups.begin(); it != m_powerups.end(); ++it)
+    {
+        delete *it;
+    }
 }
 
 void Level::update(int ms)
@@ -112,6 +117,12 @@ bool Level::checkGoalReached(const Sprite *sprite) const
     }
     return false;
 }
+
+bool Level::existObstacles() const
+{
+    return m_objects.empty();
+}
+
 
 //###################################################################
 // Everything below is the Level::Builder

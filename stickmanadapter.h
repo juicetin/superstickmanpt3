@@ -19,6 +19,7 @@
 //  - future extensibility (as everything on screen is a sprite)
 class StickmanAdapter : public Sprite, public Subject
 {
+    friend class Tests;
 public:
     // stores a stickman and adapts it
     StickmanAdapter(Stickman* stickman);

@@ -50,6 +50,9 @@ public:
     // determines whether the sprite in question is the last, and hence, the goal
     bool checkGoalReached(const Sprite *sprite) const;
 
+    // check if obstacles exist
+    bool existObstacles() const;
+
 private:
     // all objects in the level
     std::vector<Sprite*> m_objects;

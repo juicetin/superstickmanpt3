@@ -39,7 +39,7 @@ Sprite(stickman->getSprite())
 StickmanAdapter::~StickmanAdapter()
 {
     // delete m_stickman;
-    for (int i = 0; i < 1; ++i) 
+    for (int i = 0; i < 4; ++i)
     {
         if (m_stickmen[i]) delete m_stickmen[i];
     }
@@ -151,7 +151,6 @@ void StickmanAdapter::collectPowerups(Level* level, bool stage_three)
 		QSound::play(":/resources/powerup.wav");
 		notify(POWERUP);
 	}
-
 }
 
 bool StickmanAdapter::update(int ms, Level* level, bool stage_three)
