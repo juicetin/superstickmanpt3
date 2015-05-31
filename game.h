@@ -11,6 +11,7 @@
 #include "lives.h"
 #include "stickmanfactory.h"
 #include "charstats.h"
+#include "observer.h"
 
 #include <QImage>
 #include <QMessageBox>
@@ -22,12 +23,16 @@
 #include <iostream>
 #include <QDialog>
 #include <QPainter>
+#include <fstream>
 
-class Game
+class Game : public Observer
 {
 	public:
 		Game(QDialog *dialog);
         ~Game();
+
+        void onNotify(int change);
+
 		bool loadConfiguration(const ConfigReader &reader);
 		bool loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader);
 
@@ -36,13 +41,16 @@ class Game
 
         StickmanAdapter *getStickman();
 
-		bool pausedState();
-		bool pauseEnabled();
-		bool wonState();
-		bool lostState();
-        bool stage3State();
+        bool pausedState() const;
+        bool pauseEnabled() const;
+        bool wonState() const;
+        bool lostState() const;
+        bool stage3State() const;
 
-		void charMoving();
+        int getLevelsComplete() const;
+
+		void charMovingRight();
+		void charMovingLeft();
 		void charNotMoving();
 		void switchPaused();
 
@@ -62,18 +70,21 @@ class Game
 		bool m_lost;
 		bool m_won;
 		bool m_pauseScreenEnabled;
-		bool m_stageThreeEnabled;
-		bool m_moving;
+        bool m_stageThreeEnabled;
+		bool m_movingLeft;
+		bool m_movingRight;
 
 		QImage m_pauseImage;
 		QImage m_lostImage;
 		QImage m_wonImage;
 
+        int m_levelsCompleted;
+
 		Level* m_level;
 		std::vector<std::string> m_levelConfigs;
 		std::vector<std::string>::const_iterator m_levelConfigIterator;
 
-		Score m_score;
+		Score *m_score;
         Lives *m_lives;
         CharStats *m_charstats;
 

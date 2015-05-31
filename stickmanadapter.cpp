@@ -15,6 +15,7 @@ m_currJumpCount(0),
 m_maxJumpCount(2),
 Sprite(stickman->getSprite())
 {
+    /* Cache the stickman sizes and switch between them when using powerups */
     for (int i = 0; i < 4; ++i)
     {
         m_stickmen[i] = StickmanFactory::create(stickman->getSizeText(i), stickman->getSprites());
@@ -128,6 +129,7 @@ bool StickmanAdapter::resolveCollisions(Level *level, bool stage_three) {
             resetPosition();
             shrinkStickman();
             notify(COLLISION);
+            notify(POWERUP);    // Due to stickman size change
             break;
         }
     }
@@ -161,6 +163,7 @@ bool StickmanAdapter::update(int ms, Level* level, bool stage_three)
 
 
     bool check_goal = resolveCollisions(level, stage_three);
+
     collectPowerups(level, stage_three);
 
 
@@ -176,6 +179,7 @@ bool StickmanAdapter::update(int ms, Level* level, bool stage_three)
         setYPosition(0 + (m_stickman->getHeight() / 2));
     }
 
+	if (check_goal) notify(REACHEDGOAL);
     return check_goal;
 }
 
@@ -234,14 +238,17 @@ void StickmanAdapter::growStickman()
     if (m_stickman->getSize() < 3)
     {
         m_stickman = m_stickmen[m_stickman->getSize()+1];
+        m_stickman->setXVelocity(0);
 
         // set the exact dimensions of the sprite according to stickman
         Sprite::setHeight(m_stickman->getHeight(), IgnoreAspectRatio);
         Sprite::setWidth(m_stickman->getWidth(), IgnoreAspectRatio);
+        setJumpForce(getJumpForce() * 1.2);
         return;
     }
 
     /* Get more lives if upgrades are collected at max size */
+    notify(OVERMAXSIZE);
 }
 
 void StickmanAdapter::shrinkStickman()
@@ -249,9 +256,11 @@ void StickmanAdapter::shrinkStickman()
     if (m_stickman->getSize() > 0)
     {
         m_stickman = m_stickmen[m_stickman->getSize()-1];
+        m_stickman->setXVelocity(0);
 
         // set the exact dimensions of the sprite according to stickman
         Sprite::setHeight(m_stickman->getHeight(), IgnoreAspectRatio);
         Sprite::setWidth(m_stickman->getWidth(), IgnoreAspectRatio);
+        setJumpForce(getJumpForce() / 1.195);
     }
 }

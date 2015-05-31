@@ -80,3 +80,5 @@ filestocopy.path = $$OUT_PWD
 INSTALLS += filestocopy
 
 CONFIG += c++11
+
+#greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia

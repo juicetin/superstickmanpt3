@@ -3,6 +3,8 @@
 
 #define COLLISION 0
 #define POWERUP 1
+#define OVERMAXSIZE 2
+#define REACHEDGOAL 3
 
 class Observer
 {

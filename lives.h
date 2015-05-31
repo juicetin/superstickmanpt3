@@ -17,8 +17,12 @@ public:
     void render(QPainter &qpainter);
     bool update();
 
+    int getLives() const;
+    int getLivesLost() const;
+
 private:
 	int m_lives;
+	int m_livesLost;
 };
 
 #endif // LIVES_H

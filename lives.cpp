@@ -1,13 +1,18 @@
 #include "lives.h"
 
-Lives::Lives(int lives)
+Lives::Lives(int lives) : m_lives(lives), m_livesLost(0)
 {
-    m_lives = lives;
+
 }
 
 void Lives::onNotify(int change)
 {
-    if (change == COLLISION) m_lives--;
+    if (change == COLLISION)
+    {
+        m_lives--;
+        m_livesLost++;
+    } 
+    if (change == OVERMAXSIZE) m_lives++;
 }
 
 void Lives::render(QPainter &painter)
@@ -29,4 +34,14 @@ bool Lives::update()
         return true;
 	}
     return false;
+}
+
+int Lives::getLives() const
+{
+    return m_lives;
+}
+
+int Lives::getLivesLost() const
+{
+    return m_livesLost;
 }

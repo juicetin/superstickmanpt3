@@ -18,6 +18,9 @@ public:
     void render(QPainter &qpainter);
     void onNotify(int change);
 
+    std::string getSize() const;
+    float getJumpForce() const;
+
 private:
     StickmanAdapter *m_stickmanAdapter;
     StickmanSize m_curSize;

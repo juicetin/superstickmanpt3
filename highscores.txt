@@ -1,0 +1,24 @@
+[Player: jt]
+Final Score:     810
+Lives Remaining: 10
+Lives Lost:      0
+Levels Complete: 1
+
+[Player: ]
+Final Score:     1040
+Lives Remaining: 10
+Lives Lost:      0
+Levels Complete: 1
+
+[Player: Unnamed]
+Final Score:     930
+Lives Remaining: 10
+Lives Lost:      0
+Levels Complete: 1
+
+[Player: iamting]
+Final Score:     1200
+Lives Remaining: 10
+Lives Lost:      0
+Levels Complete: 1
+

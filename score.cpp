@@ -1,6 +1,6 @@
 #include "score.h"
 
-Score::Score()
+Score::Score(Lives *lives) : m_lives(lives)
 {
     m_score = 0;
 }
@@ -14,7 +14,7 @@ void Score::render(QPainter &painter)
 {
 	std::string score_text("The current score is: ");
     std::stringstream ss;
-    ss << m_score;
+    ss << m_score * m_lives->getLives();
     score_text.append(ss.str());
 
     QStaticText q_score(score_text.c_str());
@@ -22,7 +22,13 @@ void Score::render(QPainter &painter)
     painter.drawStaticText(0, 0, q_score);
 }
 
-void Score::update()
+void Score::update(bool left, bool right)
 {
-	m_score++;
+    if (left)  m_score--;
+    if (right) m_score++;
+}
+
+int Score::getScore() const
+{
+    return m_score * m_lives->getLives();
 }

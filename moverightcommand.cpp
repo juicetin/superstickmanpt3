@@ -5,7 +5,7 @@ void MoveRightCommand::execute (int keyType, Game *game, QDialog *dialog)
     if (game->stage3State() && keyType == KEYPRESS)
     {
         game->getStickman()->moveRight();
-        game->charMoving();
+        game->charMovingRight();
     }
     else if (game->stage3State() && keyType == KEYRELEASE)
     {

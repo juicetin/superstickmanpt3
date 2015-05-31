@@ -16,6 +16,7 @@ public:
     //  spawnAt - the location of the centre of the object
     //  texture - the texture of the object
     Obstacle(QSize size, QPoint spawnAt, const QPixmap &texture);
+    Obstacle(QSize size, QPoint spawnAt, const QPixmap &texture, int type);
 
     // deconstructor
     virtual ~Obstacle();

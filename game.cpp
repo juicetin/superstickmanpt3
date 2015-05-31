@@ -1,88 +1,110 @@
 #include "game.h"
 
+#include <QInputDialog>
+#include <QString>
 #include <iostream>
+#include <cstdio>
 using namespace std;
 
 Game::Game(QDialog *dialog) :
-    m_dialog(dialog),
-    m_stickmanAdapter(NULL),
-    m_background(NULL),
-    m_paused(false),
-    m_pauseImage(":/resources/paused.png"),
-    m_lostImage(":/resources/lost.png"),
-    m_wonImage(":/resources/won.png"),
-    m_moving(false),
-    m_lost(false),
-    m_won(false)
+m_dialog(dialog),
+m_stickmanAdapter(NULL),
+m_background(NULL),
+m_paused(false),
+m_pauseImage(":/resources/paused.png"),
+m_lostImage(":/resources/lost.png"),
+m_wonImage(":/resources/won.png"),
+m_movingRight(false),
+m_movingLeft(false),
+m_lost(false),
+m_won(false),
+m_levelsCompleted(0)
 {
-    std::string configFilePath("../Stage2BaseCodeF/game.config");
+	std::string configFilePath("../Stage2BaseCodeF/game.config");
 
-    ConfigReader reader(configFilePath);
-    if (!loadConfiguration(reader))
-    {
-        std::string errorMessage;
-        if (reader.fileRead())
-            errorMessage = std::string("Invalid values in config file. Using some default settings.");
-        else
-            errorMessage = std::string("Could not open configuration file '") + configFilePath + "'. Using default settings. \n"
-                    + "Base directory was '" + QDir::currentPath().toStdString() + "'";
-        QMessageBox::warning(m_dialog, "Error", errorMessage.c_str());
-    }
+	ConfigReader reader(configFilePath);
+	if (!loadConfiguration(reader))
+	{
+		std::string errorMessage;
+		if (reader.fileRead())
+			errorMessage = std::string("Invalid values in config file. Using some default settings.");
+		else
+			errorMessage = std::string("Could not open configuration file '") + configFilePath + "'. Using default settings. \n"
+		+ "Base directory was '" + QDir::currentPath().toStdString() + "'";
+		QMessageBox::warning(m_dialog, "Error", errorMessage.c_str());
+	}
 
-    if (m_stageThreeEnabled)
-    {
-        m_levelConfigIterator = m_levelConfigs.begin();
-        ConfigReader level_reader(*m_levelConfigIterator);
+	if (m_stageThreeEnabled)
+	{
+		m_levelConfigIterator = m_levelConfigs.begin();
+		ConfigReader level_reader(*m_levelConfigIterator);
 
         //  Delete level before assigning it the next one
-        delete m_level;
-        Level::Builder levelBuilder;
-        loadLevel(levelBuilder, level_reader);
-        m_level = levelBuilder.getResult();
-    }
+		delete m_level;
+		Level::Builder levelBuilder;
+		loadLevel(levelBuilder, level_reader);
+		m_level = levelBuilder.getResult();
+	}
 
-    Camera::getInstance().attachToPaintDevice(m_dialog);
-    Camera::getInstance().setXPosition(m_dialog->width() / 2 - m_stickman->getXOffset());
-    Camera::getInstance().setYPosition(m_dialog->height() / 2);
+	Camera::getInstance().attachToPaintDevice(m_dialog);
+	Camera::getInstance().setXPosition(m_dialog->width() / 2 - m_stickman->getXOffset());
+	Camera::getInstance().setYPosition(m_dialog->height() / 2);
 }
 
 Game::~Game()
 {
-    delete m_stickmanAdapter;
-    //    delete m_stickman;
-    delete m_background;
-    delete m_level;
-    delete m_lives;
-    delete m_charstats;
+    if (m_stageThreeEnabled && (m_won || m_lost))
+    {
+        QString text = QInputDialog::getText(m_dialog, ("Player Name"),
+                                             ("Please enter your name"));
+        if (text.isEmpty()) text = "Unnamed";
+        //	Print final score, stages completed, lives remaining, lives lost
+        FILE *f = fopen("../Stage2BaseCodeF/highscores.txt", "a+");
+        fprintf(f, "[Player: %s]\n"
+                   "Final Score:     %d\n"
+                   "Lives Remaining: %d\n"
+                   "Lives Lost:      %d\n"
+                   "Levels Complete: %d\n\n",
+                text.toStdString().c_str(), m_score->getScore(), m_lives->getLives(),
+                m_lives->getLivesLost(), getLevelsComplete());
+        fclose(f);
+    }
+
+	delete m_stickmanAdapter;
+	delete m_score;
+	delete m_background;
+	delete m_level;
+	delete m_lives;
+	delete m_charstats;
 }
 void Game::readObjectPath(std::string &objectSprite, const ConfigReader reader, const std::string name, bool &successful)
 {
-    objectSprite = reader.get(name, "Sprite");
-    if (objectSprite == "") {
+	objectSprite = reader.get(name, "Sprite");
+	if (objectSprite == "") {
 		std::cerr << "error: [" << name << "]: Sprite was not set." << std::endl;
-        objectSprite = ":/resources/block_brown.png";
+		objectSprite = ":/resources/block_brown.png";
 		successful = false;
 	}
 }
 
 void Game::readObjectWidth(int &objectWidth, const ConfigReader reader, bool &parseOk, const std::string name, bool &successful)
 {
-    objectWidth = QString(reader.get(name, "Width").c_str()).toInt(&parseOk);
-    if (!parseOk || objectWidth < 0) {
-        std::cerr << "error: [" << name << "]: width was not an integer." << std::endl;
-        objectWidth = 1;
-        successful = false;
-    }
+	objectWidth = QString(reader.get(name, "Width").c_str()).toInt(&parseOk);
+	if (!parseOk || objectWidth < 0) {
+		std::cerr << "error: [" << name << "]: width was not an integer." << std::endl;
+		objectWidth = 1;
+		successful = false;
+	}
 }
 
 void Game::readObjectHeight(int &objectHeight, const ConfigReader reader, bool &parseOk, const std::string name, bool &successful)
 {
-    objectHeight = QString(reader.get(name, "Height").c_str()).toInt(&parseOk);
-    if (!parseOk || objectHeight < 0) {
-        std::cerr << "error: [" << name << "]: height was not an integer." << std::endl;
-        objectHeight = 1;
-        successful = false;
-    }
+	objectHeight = QString(reader.get(name, "Height").c_str()).toInt(&parseOk);
+	if (!parseOk || objectHeight < 0) {
+		std::cerr << "error: [" << name << "]: height was not an integer." << std::endl;
+		objectHeight = 1;
+		successful = false;
+	}
 }
 
 bool Game::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
@@ -103,20 +125,20 @@ bool Game::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
 		successful = false;
 	}
 
-    int obst_unitsInPixels = QString(reader.get("Level", "UnitsInPixels").c_str()).toInt(&parseOk);
-    if (!parseOk || obst_unitsInPixels < 0) {
-        obst_unitsInPixels = 32;
+	int obst_unitsInPixels = QString(reader.get("Level", "UnitsInPixels").c_str()).toInt(&parseOk);
+	if (!parseOk || obst_unitsInPixels < 0) {
+		obst_unitsInPixels = 32;
 		successful = false;
 	}
 
-    int powup_unitsInPixels = QString(reader.get("Powerups", "UnitsInPixels").c_str()).toInt(&parseOk);
-    if (!parseOk || powup_unitsInPixels < 0) {
-        powup_unitsInPixels = 32;
-        successful = false;
-    }
+	int powup_unitsInPixels = QString(reader.get("Powerups", "UnitsInPixels").c_str()).toInt(&parseOk);
+	if (!parseOk || powup_unitsInPixels < 0) {
+		powup_unitsInPixels = 32;
+		successful = false;
+	}
 
-    float obstaclePosition = m_dialog->width(), powerUpPosition = m_dialog->width();
-    int obst_previousWidth = 0, powup_previousWidth = 0;
+	float obstaclePosition = m_dialog->width(), powerUpPosition = m_dialog->width();
+	int obst_previousWidth = 0, powup_previousWidth = 0;
 	int i = rangeStart;
 	while (i <= rangeEnd) {
 		std::stringstream indexStream;
@@ -141,27 +163,27 @@ bool Game::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
 			ss >> height;
 
 			/* Sprite image path*/
-            std::string obstacleSprite;
-            readObjectPath(obstacleSprite, reader, name, successful);
+			std::string obstacleSprite;
+			readObjectPath(obstacleSprite, reader, name, successful);
 
 			/* Obstacle width */
-            int obstacleWidth;
-            readObjectWidth(obstacleWidth, reader, parseOk, name, successful);
+			int obstacleWidth;
+			readObjectWidth(obstacleWidth, reader, parseOk, name, successful);
 
-            /* Obstacle height */
-            int obstacleHeight;
-            readObjectHeight(obstacleHeight, reader, parseOk, name, successful);
+			/* Obstacle height */
+			int obstacleHeight;
+			readObjectHeight(obstacleHeight, reader, parseOk, name, successful);
 
-            obstaclePosition += ((obst_previousWidth / 2.0f) + (obstacleWidth / 2.0f)) * obst_unitsInPixels;
+			obstaclePosition += ((obst_previousWidth / 2.0f) + (obstacleWidth / 2.0f)) * obst_unitsInPixels;
 			obst_previousWidth = obstacleWidth;
 
 			levelBuilder.buildObstacle(
-                    QSize(obstacleWidth * obst_unitsInPixels, obstacleHeight * obst_unitsInPixels),
-                    QPoint(obstaclePosition, (obstacleHeight * obst_unitsInPixels / 2.0f) + height * obst_unitsInPixels),
+					QSize(obstacleWidth * obst_unitsInPixels, obstacleHeight * obst_unitsInPixels),
+					QPoint(obstaclePosition, (obstacleHeight * obst_unitsInPixels / 2.0f) + height * obst_unitsInPixels),
 					QPixmap(obstacleSprite.c_str())
 					);
 
-            obstaclePosition += gap * obst_unitsInPixels;
+			obstaclePosition += gap * obst_unitsInPixels;
 		}
 
 		if (!powerup_pair.empty())
@@ -171,28 +193,28 @@ bool Game::loadLevel(Level::Builder &levelBuilder, const ConfigReader &reader)
 			ss >> gap;
 			ss >> height;
 
-            /* Sprite image path*/
-            std::string powerUpSprite;
-            readObjectPath(powerUpSprite, reader, name, successful);
+			/* Sprite image path*/
+			std::string powerUpSprite;
+			readObjectPath(powerUpSprite, reader, name, successful);
 
-            /* Obstacle width */
-            int powerUpWidth;
-            readObjectWidth(powerUpWidth, reader, parseOk, name, successful);
+			/* Obstacle width */
+			int powerUpWidth;
+			readObjectWidth(powerUpWidth, reader, parseOk, name, successful);
 
-            /* Obstacle height */
-            int powerUpHeight;
-            readObjectHeight(powerUpHeight, reader, parseOk, name, successful);
+			/* Obstacle height */
+			int powerUpHeight;
+			readObjectHeight(powerUpHeight, reader, parseOk, name, successful);
 
-            powerUpPosition += ((powup_previousWidth / 2.0f) + (powerUpWidth / 2.0f)) * powup_unitsInPixels;
-            powup_previousWidth = powerUpWidth;
+			powerUpPosition += ((powup_previousWidth / 2.0f) + (powerUpWidth / 2.0f)) * powup_unitsInPixels;
+			powup_previousWidth = powerUpWidth;
 
-            levelBuilder.buildPowerup(
-                    QSize(powerUpWidth * powup_unitsInPixels, powerUpHeight * powup_unitsInPixels),
-                    QPoint(powerUpPosition, (powerUpHeight * powup_unitsInPixels / 2.0f) + height * powup_unitsInPixels),
-                    QPixmap(powerUpSprite.c_str())
-                    );
+			levelBuilder.buildPowerup(
+					QSize(powerUpWidth * powup_unitsInPixels, powerUpHeight * powup_unitsInPixels),
+					QPoint(powerUpPosition, (powerUpHeight * powup_unitsInPixels / 2.0f) + height * powup_unitsInPixels),
+					QPixmap(powerUpSprite.c_str())
+					);
 
-            powerUpPosition += gap * powup_unitsInPixels;
+			powerUpPosition += gap * powup_unitsInPixels;
 		}
 
 		i++;
@@ -349,14 +371,16 @@ bool Game::loadConfiguration(const ConfigReader &reader)
 		successful = false;
 	}
 	m_lives = new Lives(lives);
+	m_score = new Score(m_lives);
 
 	m_stickmanAdapter = new StickmanAdapter(m_stickman);
 
 	m_charstats = new CharStats(m_stickmanAdapter);
 
-	m_stickmanAdapter->addObserver(&m_score);
+	m_stickmanAdapter->addObserver(m_score);
 	m_stickmanAdapter->addObserver(m_lives);
 	m_stickmanAdapter->addObserver(m_charstats);
+	m_stickmanAdapter->addObserver(this);
 
 	int stickmanMaxJumps = QString(reader.get("Stickman", "MaxJumps").c_str()).toInt(&parseOk);
 	if (!parseOk || stickmanMaxJumps <= 0) {
@@ -391,40 +415,44 @@ void Game::update(QTime &time)
 		// Update our entities
 		m_background->update(ms);
 		m_level->update(ms);
-		bool check_goal = m_stickmanAdapter->update(ms, m_level, m_stageThreeEnabled);
-
-		// When a level is finished
-		if (check_goal && m_stageThreeEnabled)
-		{
-			// Finish the game if last level
-			m_levelConfigIterator++;
-			if (m_levelConfigIterator == m_levelConfigs.end())
-			{
-				m_won = true;
-				m_paused = true;
-			}
-			// Move onto the next level
-			else
-			{
-				delete m_level;
-				ConfigReader level_reader(*m_levelConfigIterator);
-				Level::Builder levelBuilder;
-				loadLevel(levelBuilder, level_reader);
-				m_level = levelBuilder.getResult();
-				m_stickmanAdapter->resetPosition();
-			}
-		}
+		m_stickmanAdapter->update(ms, m_level, m_stageThreeEnabled);
 
 		// Point the camera at the player (with an offset)
 		Camera::getInstance().setXPosition(m_stickmanAdapter->getXPosition() + m_dialog->width() / 2 - m_stickman->getXOffset());
 
 		// if we have passed the level, reset the player to 0 to play again
-		if ( (m_level->rect().right()) < m_stickmanAdapter->getXPosition() - m_stickman->getXOffset()) {
+		if (!m_stageThreeEnabled && (m_level->rect().right()) < m_stickmanAdapter->getXPosition() - m_stickman->getXOffset()) {
 			m_stickmanAdapter->setXPosition(0);
 		}
 
-		if (m_moving) {
-			m_score.update();
+        if (m_movingLeft || m_movingRight) {
+            m_score->update(m_movingLeft, m_movingRight);
+		}
+	}
+}
+
+void Game::onNotify(int change)
+{
+	// When a level is finished
+	if (change == REACHEDGOAL && m_stageThreeEnabled)
+	{
+        m_levelsCompleted++;
+		// Finish the game if last level
+		m_levelConfigIterator++;
+		if (m_levelConfigIterator == m_levelConfigs.end())
+		{
+			m_won = true;
+			m_paused = true;
+		}
+		// Move onto the next level
+		else
+		{
+			delete m_level;
+			ConfigReader level_reader(*m_levelConfigIterator);
+			Level::Builder levelBuilder;
+			loadLevel(levelBuilder, level_reader);
+			m_level = levelBuilder.getResult();
+			m_stickmanAdapter->resetPosition();
 		}
 	}
 }
@@ -434,11 +462,11 @@ void Game::render(QPainter &painter)
 	m_background->render(painter);
 	m_stickmanAdapter->render(painter);
 	m_level->render(painter);
-	m_charstats->render(painter);
 
 	if (m_stageThreeEnabled)
 	{
-		m_score.render(painter);
+		m_charstats->render(painter);
+		m_score->render(painter);
 		m_lives->render(painter);
 		if (m_lost = m_lives->update())
 		{
@@ -466,6 +494,20 @@ void Game::render(QPainter &painter)
 		{
 			painter.drawImage(x, y, m_pauseImage);
 		}
+
+		//	Print final score
+		if (m_won || m_lost)
+		{
+			std::string score_text("YOUR FINAL SCORE IS: ");
+			std::stringstream ss;
+			ss << m_score->getScore();
+			score_text.append(ss.str());
+
+			QStaticText q_score(score_text.c_str());
+			painter.setFont(QFont("Helvetica", 16));
+			painter.setPen(Qt::white);
+			painter.drawStaticText(m_dialog->width()/2-105, m_dialog->height()/2+40, q_score);
+		}
 	}
 }
 
@@ -474,39 +516,50 @@ StickmanAdapter *Game::getStickman()
 	return m_stickmanAdapter;
 }
 
-bool Game::pausedState()
+bool Game::pausedState() const
 {
 	return m_paused;
 }
 
-bool Game::pauseEnabled()
+bool Game::pauseEnabled() const
 {
 	return m_pauseScreenEnabled;
 }
 
-bool Game::wonState()
+bool Game::wonState() const
 {
 	return m_won;
 }
 
-bool Game::lostState()
+bool Game::lostState() const
 {
 	return m_lost;
 }
 
-bool Game::stage3State()
+bool Game::stage3State() const
 {
 	return m_stageThreeEnabled;
 }
 
-void Game::charMoving()
+int Game::getLevelsComplete() const
 {
-	m_moving = true;
+    return m_levelsCompleted;
+}
+
+void Game::charMovingLeft()
+{
+	m_movingLeft = true;
+}
+
+void Game::charMovingRight()
+{
+	m_movingRight = true;
 }
 
 void Game::charNotMoving()
 {
-	m_moving = false;
+	m_movingLeft = false;
+	m_movingRight = false;
 }
 
 void Game::switchPaused()

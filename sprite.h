@@ -65,7 +65,6 @@ public:
 
     ColliderType getColliderType() const;
 
-
     float getOriginalXPos() const;
     float getOriginalYPos() const;
 
