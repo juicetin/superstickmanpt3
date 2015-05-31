@@ -31,7 +31,7 @@ public:
 	bool stopTest();
     bool getJumpForceTest();
     
-    bool runAllTests();
+    void runAllTests();
 
     Game *m_game;
 };

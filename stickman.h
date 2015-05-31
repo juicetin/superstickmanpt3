@@ -17,6 +17,7 @@ class Stickman
 {
 public:
     friend class StickmanAdapter;
+    friend class Tests;
 
     // Initialises a new stickman
     // sprites is a list of animation frames

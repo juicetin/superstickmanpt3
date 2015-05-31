@@ -14,23 +14,15 @@ Changes/notes to mention
 PASSING GRADE (50%)
 DONE* must compile and run in lab (but may use own laptop)
 DONE* preserve previous two stages' functionality
-		---Stage3=on in config - otherwise no stage 3 stuff will appear
 DONE* appropriate use of a behavioural design pattern
-		---used so far - observer
-		---still can be used - state
+		---observer, command
 DONE* clear code, meaningful variable/method names, informative commenting and
 		documentation
 DONE* stickman must have configurable number of lives
-		---Lives=X in config
 DONE* when stickman intersects with an obstacle they lose a life and restart the
 		level
-		---Simply change stickmanadapter's coordinates, because:
-		---Darren+Scott's awesome code means stickman actually has x-coordinates
-		---StickmanAdapter is subject, and lives/score are observers - life lost,
-			stickman moved back by screen [set amount]
 DONE* score must be displayed, showing how well the player is doing (this could
 		be as simple a a timer or as complex as you like)
-		---Score class printed on screen - simply a timer
 
 CREDIT (65%)
 DONE* user control over the stickman - left and right keys will control
@@ -53,16 +45,12 @@ DISTINCTION (75%)
 		obstacles, LARGE should permit you to jump higher than normal mode, 
 		and GIANT mode should make you immune to obstacles - i.e. explode on
 		impact
-		===STATES FOR THE DIFFERENT STICKMAN SIZES VIA ADAPTER===
-			---many different "streams" of states = concurrent state machines
-			needed
 	* a sensible testing framework for your code
-		- testing framework only needs to include stage 3 code
 
 HIGH DISTINCTION (85%)
-	* further power-ups
+	* further power-ups (no)
 	* infinite levels
 		===dynamically generate new levels
 	* a scoreboard that persists between games
-		===WRITING TO FILE - RAII ON GAME DESTRUCTION MAYBE 
 	* more things with exclamation marks!
+	

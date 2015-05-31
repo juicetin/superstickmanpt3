@@ -121,7 +121,7 @@ bool StickmanAdapter::resolveCollisions(Level *level, bool stage_three) {
         // did we hit a wall on the left?
         } else if ( (angle > 1.75 * M_PI && angle <= 2 * M_PI) || (angle >= 0 && angle <= 0.25 * M_PI)) {
             setXPosition(getXPosition() + ins.width());
-//            wanted_collision = true;
+            wanted_collision = true;
         }
 
         // Resets from collision only occur when hitting the right/left sides

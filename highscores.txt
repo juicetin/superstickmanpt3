@@ -184,3 +184,69 @@ Lives Remaining: 10
 Lives Lost:      0
 Levels Complete: 0
 
+[Player: Unnamed]
+Final Score:     0
+Lives Remaining: 10
+Lives Lost:      0
+Levels Complete: 0
+
+[Player: Unnamed]
+Final Score:     0
+Lives Remaining: 10
+Lives Lost:      0
+Levels Complete: 0
+
+[Player: Unnamed]
+Final Score:     0
+Lives Remaining: 10
+Lives Lost:      0
+Levels Complete: 0
+
+[Player: Unnamed]
+Final Score:     0
+Lives Remaining: 10
+Lives Lost:      0
+Levels Complete: 0
+
+[Player: asdf]
+Final Score:     13554
+Lives Remaining: 18
+Lives Lost:      2
+Levels Complete: 5
+
+[Player: asdf]
+Final Score:     0
+Lives Remaining: 20
+Lives Lost:      0
+Levels Complete: 0
+
+[Player: Unnamed]
+Final Score:     0
+Lives Remaining: 20
+Lives Lost:      0
+Levels Complete: 0
+
+[Player: jt]
+Final Score:     24990
+Lives Remaining: 21
+Lives Lost:      0
+Levels Complete: 3
+
+[Player: Unnamed]
+Final Score:     45
+Lives Remaining: 0
+Lives Lost:      1
+Levels Complete: 0
+
+[Player: aw]
+Final Score:     200
+Lives Remaining: 0
+Lives Lost:      1
+Levels Complete: 1
+
+[Player: aw]
+Final Score:     49
+Lives Remaining: 0
+Lives Lost:      1
+Levels Complete: 0
+

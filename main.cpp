@@ -12,9 +12,9 @@ int main(int argc, char *argv[])
 
 	// Tests - always run these during development as you will
 	// know if any changes broke anything. Remove for final release
-	Dialog tmp;
-	Tests tests(&tmp);
-	tests.runAllTests();
+//    Dialog tmp;
+//    Tests tests(&tmp);
+//    tests.runAllTests();
 
     // Set current working directory to the app path so we can use
     // relative paths for the configuration file

@@ -24,7 +24,7 @@ Game::Game(QDialog *dialog) :
     m_levelsCompleted(0),
     m_playLost(false),
     m_playWon(false),
-    m_jumpEnabled(false)
+    m_jumpEnabled(true)
 {
     std::string configFilePath("../superstickmanpt3/game.config");
 
