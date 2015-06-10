@@ -24,11 +24,11 @@ Command * InputHandler::handleInput(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_Escape)
     {
-        cout << e->type() << endl;
-        cout << e->key() << endl;
-        cout << e->modifiers() << endl;
-        cout << e->text().toStdString() << endl;
-        cout << e->count() << endl;
+//        cout << e->type() << endl;
+//        cout << e->key() << endl;
+//        cout << e->modifiers() << endl;
+//        cout << e->text().toStdString() << endl;
+//        cout << e->count() << endl;
         return key_p;
     }
     if (e->key() == Qt::Key_Q)      return key_q;
